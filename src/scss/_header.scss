@@ -1,0 +1,16 @@
+@import "bourbon/core/bourbon";
+@import "vars";
+
+$header_color:blue;
+
+.main_header {
+    display: flex;
+    text-align: center;
+    vertical-align: middle;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background: $header_color;
+    @include margin ($align_from_border null null null);
+    @include size (auto, $header_slider_h); 
+}

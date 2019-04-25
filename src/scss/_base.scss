@@ -1,0 +1,72 @@
+@import "bourbon/core/bourbon";
+
+// basic tags and elements
+body {
+    @include size(100%, 100%);
+}
+
+
+
+@media (min-width: 325px){
+	.indicators {
+		//background: rgb(99, 60, 136);
+		@include size (200px, 200px);
+		display: flex;
+		flex-direction: column;
+		//justify-content: space-around;
+		position: absolute;
+		margin-left:$align_from_border;
+		//left: 2.142em;
+		font-size: 84%;
+		bottom: 9.5em;
+		z-index: 3;
+		white-space: nowrap;
+	}
+	select[name = "select_indicator"]{
+		display: none;
+	}
+	/*.main_header{
+		padding: 5px;
+		height:49px;
+		margin-left: 30%;
+		margin-right: 30%;
+		min-width: 325px;
+		display: flex;
+		border: thin;
+		background: #D92023;
+		text-align: center;
+		vertical-align: middle;
+		margin-top: 5px;
+		margin-bottom: 5px;
+		flex-direction: column;
+		justify-content: center;
+		align-items: center;
+		}*/
+	}
+
+
+@media screen and (max-width:325px){
+		// .main_header{
+		// 	padding: 5px;
+		// 	height:49px;
+		// 	margin-left: 30%;
+		// 	margin-right: 30%;
+		// 	//min-width: 325px;
+		// 	display: none;
+		// 	border: thin;
+		// 	background: #D92023;
+		// 	text-align: center;
+		// 	vertical-align: middle;
+		// 	margin-top: 5px;
+		// 	margin-bottom: 5px;
+		// 	flex-direction: column;
+		// 	justify-content: center;
+		// 	align-items: center;
+		// }
+		.indicators {
+			display:none;
+		}
+		select[name = "select_indicator"]{
+			display: block;
+		}
+}

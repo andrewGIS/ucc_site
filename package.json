@@ -1,0 +1,43 @@
+{
+  "name": "test_folder",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "private": true,
+  "dependencies": {
+    "@types/leaflet": "^1.4.2",
+    "bootstrap": "^4.3.1",
+    "bourbon": "^5.1.0",
+    "jquery": "^3.3.1",
+    "leaflet": "^1.4.0",
+    "node-sass": "^4.11.0",
+    "popper": "^1.0.1"
+  },
+  "devDependencies": {
+    "css-loader": "^2.1.0",
+    "extract-text-webpack-plugin": "^4.0.0-beta.0",
+    "ts-loader": "^5.3.3",
+    "typescript": "^3.3.3",
+    "vue": "^2.6.6",
+    "vue-loader": "^15.6.2",
+    "vue-template-compiler": "^2.6.6",
+    "webpack": "^4.29.5",
+    "webpack-cli": "^3.2.1"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "webpack -p",
+    "watch": "webpack --watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/andrewGIS/test_new_frontend_features.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/andrewGIS/test_new_frontend_features/issues"
+  },
+  "homepage": "https://github.com/andrewGIS/test_new_frontend_features#readme"
+}

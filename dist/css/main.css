@@ -1,0 +1,193 @@
+.main_header {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  text-align: center;
+  vertical-align: middle;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  background: blue;
+  margin-top: 5px;
+  height: 49px;
+  width: auto;
+}
+
+.slider_box {
+  background: yellow;
+  height: 49px;
+  width: auto;
+  padding: 0;
+  margin-bottom: 5px;
+}
+
+.current_year {
+  font-size: 1.4em;
+  text-align: center;
+  line-height: 50px;
+}
+
+.year_switcher {
+  height: 49px;
+  width: 49px;
+}
+
+/* Sass Document */
+#map {
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  bottom: 0px;
+  left: 0px;
+  z-index: -10;
+}
+
+.indicators {
+  height: 200px;
+  width: 200px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  position: absolute;
+  margin-left: 5px;
+  font-size: 84%;
+  bottom: 9.5em;
+  z-index: 3;
+  white-space: nowrap;
+}
+
+.indicators a:before {
+  content: "";
+  background: #fff;
+  -webkit-box-shadow: 0 1.5px 3px rgba(0, 0, 0, 0.25);
+          box-shadow: 0 1.5px 3px rgba(0, 0, 0, 0.25);
+  border-radius: 2em;
+  width: 2.142em;
+  height: 2.142em;
+  position: absolute;
+  overflow: hidden;
+  -webkit-transition: .2s;
+  transition: .2s;
+  background: url("/dist/img/icons_prepinac_v3.svg") no-repeat;
+}
+
+.indicators a span {
+  margin-left: 3em;
+  padding: 0.45em 1.25em;
+  line-height: 30px;
+  background: #fff;
+  -webkit-box-shadow: 0 1.5px 3px rgba(0, 0, 0, 0.25);
+          box-shadow: 0 1.5px 3px rgba(0, 0, 0, 0.25);
+  border-radius: 12em;
+}
+
+.indicators a span:hover {
+  cursor: pointer;
+  background: rgba(172, 164, 164, 0.548);
+}
+
+.indicators a.temperature:before {
+  background-position: 0 -90px;
+}
+
+#indicators a span.radar:before {
+  background-position: -180px;
+}
+
+select[name="select_month"], select[name="select_period"] {
+  left: 2.142em;
+  font-size: 84%;
+  padding: 0.45em 1.25em;
+  background: #fff;
+  -webkit-box-shadow: 0 1.5px 3px rgba(0, 0, 0, 0.25);
+          box-shadow: 0 1.5px 3px rgba(0, 0, 0, 0.25);
+  border-radius: 2em;
+  margin-left: 3.45em;
+  padding: 0.45em 1.25em;
+  width: 10em;
+  -webkit-appearance: none;
+     -moz-appearance: none;
+          appearance: none;
+  background-image: url("/dist/img/dr_won_narrow.png");
+  background-size: 20%;
+  background-position: 98% center;
+  background-repeat: no-repeat;
+  outline: none;
+  border: 1px solid #DDD;
+  height: 30px;
+}
+
+.active_indicator {
+  cursor: pointer;
+  background: rgba(240, 6, 6, 0.548) !important;
+}
+
+.active_icon:before {
+  background-color: rgba(240, 6, 6, 0.548) !important;
+}
+
+body {
+  height: 100%;
+  width: 100%;
+}
+
+@media (min-width: 325px) {
+  .indicators {
+    height: 200px;
+    width: 200px;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+        -ms-flex-direction: column;
+            flex-direction: column;
+    position: absolute;
+    margin-left: 5px;
+    font-size: 84%;
+    bottom: 9.5em;
+    z-index: 3;
+    white-space: nowrap;
+  }
+  select[name="select_indicator"] {
+    display: none;
+  }
+  /*.main_header{
+		padding: 5px;
+		height:49px;
+		margin-left: 30%;
+		margin-right: 30%;
+		min-width: 325px;
+		display: flex;
+		border: thin;
+		background: #D92023;
+		text-align: center;
+		vertical-align: middle;
+		margin-top: 5px;
+		margin-bottom: 5px;
+		flex-direction: column;
+		justify-content: center;
+		align-items: center;
+		}*/
+}
+
+@media screen and (max-width: 325px) {
+  .indicators {
+    display: none;
+  }
+  select[name="select_indicator"] {
+    display: block;
+  }
+}
+/*# sourceMappingURL=main.css.map */
