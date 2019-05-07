@@ -24,9 +24,6 @@ var start_indicator_name = "Day_with_snow"
 var start_group_name = "Climate_terms_3_hours_data_focal";
 
 
-var dfdfdf
-
-
 var active_period_index = -1;
 
 
