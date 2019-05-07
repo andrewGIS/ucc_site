@@ -10,10 +10,12 @@
     "bourbon": "^5.1.0",
     "jquery": "^3.3.1",
     "leaflet": "^1.4.0",
+    "lodash": "^4.17.11",
     "node-sass": "^4.11.0",
     "popper": "^1.0.1"
   },
   "devDependencies": {
+    "@types/lodash": "^4.14.123",
     "css-loader": "^2.1.0",
     "extract-text-webpack-plugin": "^4.0.0-beta.0",
     "ts-loader": "^5.3.3",

@@ -8,33 +8,14 @@
             "name": "Launch index.html",
             "type": "firefox",
             "request": "launch",
+            "webRoot": "${workspaceFolder}",
+            "url": "http://localhost:8080/",
             "reAttach": true,
             "file": "${workspaceFolder}/dist/index.html",
             "reloadOnChange": {
                 "watch": ["${workspaceFolder}/dist/*.html","${workspaceFolder}/dist/*.js","${workspaceFolder}/css/*.css"],
                 "ignore": [ "${workspaceFolder}/node_modules/**" ]
             }
-        },
-        {
-            "name": "Launch localhost",
-            "type": "firefox",
-            "request": "launch",
-            "reAttach": true,
-            "url": "http://localhost/index.html",
-            "webRoot": "${workspaceFolder}"
-        },
-        {
-            "name": "Attach",
-            "type": "firefox",
-            "request": "attach"
-        },
-        {
-            "name": "Launch addon",
-            "type": "firefox",
-            "request": "launch",
-            "reAttach": true,
-            "addonType": "webExtension",
-            "addonPath": "${workspaceFolder}"
         }
     ]
 }

@@ -7,7 +7,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>index</title>
 	<link href="css/bootstrap-4.0.0.css" rel="stylesheet" type="text/css">
-	
+
 	<link href="../node_modules/leaflet/dist/leaflet.css" rel="stylesheet" type="text/css">
 	<link href="css/main.css" rel="stylesheet" type="text/css">
 	<!-- <script>src = "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.4.0/leaflet.js"</script> -->
@@ -20,42 +20,49 @@
 </head>
 
 <body>
-	<div id="map"></div>
+
+		<div id="map"></div>
+		<div id="main_app">
 		<header class="main_header offset-sm-3 offset-md-3 col-xl-6 col-sm-6 col-12 col-md-6 col-lg-6 rounded">
 			Атласная информационная система "Изменение климата Урала"
 		</header>
-		<div id = "indicators-app" class="indicators rounded">
-			<a v-bind:class= "{active_icon:temp_active}" class = temperature v-on:click="show_temp" ><span class = temperature v-bind:class= "{active_indicator:temp_active}" >Температура</span></a>
+		<div id="indicators-app" class="indicators rounded">
+			<a :class="{active_icon:temp_active}" class=temperature v-on:click="show_temp"><span class=temperature
+					v-bind:class="{active_indicator:temp_active}">Климатические показатели 3-ч часовые</span></a>
 			<template v-if="temp_active">
-				<select name="select_month">
-					<option value="volvo">Год</option>
-					<option value="saab">Январь</option>
-					<option value="fiat">Февраль</option>
-					<option value="audi">Июль</option>
+				<select name="select_subindicator">
+					<option v-for="obj in create_aviable_indicator_list" v-bind:value="obj.raster.indicator_name"
+						@click=change_indicator($event)>
+						{{obj.raster.indicator_alias}}</option>
 				</select>
 				<select name="select_period">
-					<option v-on:click="change_period('0')" >1951 - 1980</option>
-					<option v-on:click="change_period('1')" >1961 - 1990</option>
-					<option v-on:click="change_period('2')" >1971 - 2000</option>
-					<option v-on:click="change_period('3')" >1981 - 2010</option>
+					<option  @click=change_period($event) v-for="obj in create_aviable_year_list" v-bind:value="obj.raster.period">
+						{{obj.raster.period.replace("_","-")}}</option>
 				</select>
+				<select name="select_month">
+					<option v-for="obj in create_aviable_month_list" v-bind:value="obj.raster.month">
+						{{obj.raster.month}}</option>
+				</select>
+
 			</template>
-			<a class="radar"><span class="radar" >Влажность</span></a>
+			<a class="radar"><span class="radar">Влажность</span></a>
 			<a class="radar"><span class="radar">Осадки</span></a>
 			<a class="radar"><span class="radar">Радар погоды</span></a>
 		</div>
-			<select name="select_indicator">
-				<option value="volvo">1995 - 1999</option>
-				<option value="saab">1995 - 1999</option>
-				<option value="fiat">1995 - 1999</option>
-				<option value="audi">1995 - 1999</option>
-			</select>
-		<div id = "slider-app" class="slider_box offset-sm-3 offset-md-3 col-xl-6 col-sm-6 col-12 col-md-6 col-lg-6 fixed-bottom rounded ">
-			<button  v-on:click="decrease_year" type="button" class="btn btn-sm year_switcher previous float-left">&lt</button>
+		<select name="select_indicator">
+			<option value="volvo">1995 - 1999</option>
+			<option value="saab">1995 - 1999</option>
+			<option value="fiat">1995 - 1999</option>
+			<option value="audi">1995 - 1999</option>
+		</select>
+		<!-- <div id="slider-app"
+			class="slider_box offset-sm-3 offset-md-3 col-xl-6 col-sm-6 col-12 col-md-6 col-lg-6 fixed-bottom rounded ">
+			<button v-on:click="decrease_year" type="button"
+				class="btn btn-sm year_switcher previous float-left">&lt</button>
 			<button v-on:click="increase_year" class="btn btn-sm year_switcher next float-right">&gt</button>
 			<div class="current_year">{{ current_year }}</div>
-		</div>
-
+		</div> -->
+	</div>
 
 
 </body>

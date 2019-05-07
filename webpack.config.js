@@ -12,7 +12,8 @@ module.exports = {
     aggregateTimeout: 100
   },
   // если есть переменная то создаем сорс мэпы, если нет то вообще их не создаем
-  devtool: NODE_ENV == "developmnet" ? "eval" : null,
+  //devtool: NODE_ENV == "developmnet" ? "eval" : null,
+  devtool:"eval-source-map",
   //либо "cheap-inline-module-source-map" на продакшн можно source-map
   entry: './src/index.ts',
   output: {
