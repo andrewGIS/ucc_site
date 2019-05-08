@@ -21,8 +21,8 @@
 
 <body>
 
-		<div id="map"></div>
-		<div id="main_app">
+	<div id="map"></div>
+	<div id="main_app">
 		<header class="main_header offset-sm-3 offset-md-3 col-xl-6 col-sm-6 col-12 col-md-6 col-lg-6 rounded">
 			Атласная информационная система "Изменение климата Урала"
 		</header>
@@ -31,21 +31,21 @@
 					v-bind:class="{active_indicator:temp_active}">Климатические показатели 3-ч часовые</span></a>
 			<template v-if="temp_active">
 				<select name="select_subindicator">
-					<option v-for="obj in create_aviable_indicator_list" v-bind:value="obj.raster.indicator_name"
-						@click=change_indicator($event)>
-						{{obj.raster.indicator_alias}}</option>
+					<option @click=change_indicator($event) v-for="indicator in aviable_indicator_list"
+						:value="indicator.name">
+						{{indicator.alias}}</option>
 				</select>
-				<select name="select_period">
-					<option  @click=change_period($event) v-for="obj in create_aviable_year_list" v-bind:value="obj.raster.period">
-						{{obj.raster.period.replace("_","-")}}</option>
+				<select name="select_period" v-model="selected_period">
+					<option @click=update_map() v-for="year,index in aviable_periods" :value="year">
+						{{year.replace("_","-")}}</option>
 				</select>
-				<select name="select_month">
-					<option v-for="obj in create_aviable_month_list" v-bind:value="obj.raster.month">
-						{{obj.raster.month}}</option>
+				<select name="select_month" v-model="selected_month">
+					<option @click=update_map() v-for="month in aviable_months" :value="month.key">
+						{{month.alias}}</option>
 				</select>
 
 			</template>
-			<a class="radar"><span class="radar">Влажность</span></a>
+			<a class="radar"><span class="radar">Тест</span></a>
 			<a class="radar"><span class="radar">Осадки</span></a>
 			<a class="radar"><span class="radar">Радар погоды</span></a>
 		</div>
