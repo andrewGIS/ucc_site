@@ -18,7 +18,7 @@ export const loaded_data = {
                     alias:"Средняя скорость ветра",
                     periods:['1971_2000','1981_2010'],
                     months:['year','jan','apr', 'jul', 'oct'],
-                    style:"raster",
+                    style:"ucc:mean_wind",
                     postfix_in_file:"with_h_focal.tif"
                 },
                 {

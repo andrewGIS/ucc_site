@@ -16,13 +16,12 @@ import * as _ from "lodash";
 //let container = Creat
 //let map = new L.Map(document.getElementById("map"));
 
-
+// interface for display aviable month in list
 interface month {
     key:string,
     alias:string
 }
 
-var start_index: number = 0;
 //var copy_data = loaded_data;
 var copy_data_v2 = loaded_data_v2;
 var first_layer = "ucc:Day_with_snow_1951_1980_with_h_focal.tif"
@@ -55,35 +54,6 @@ document.addEventListener("DOMContentLoaded", function (event) {
 
 
 function init_app() {
-
-    // let slider_app = new Vue({
-    //     el: '#slider-app',
-    //     data: {
-    //         loaded_rasters: copy_data,
-    //         current_year: "Выберите год",
-    //         map: load_map()
-    //     },
-    //     methods: {
-    //         decrease_year: function () {
-    //             start_index = start_index - 1
-    //             //this.current_year -= 1;
-    //             layer_wms.setParams({ layers: copy_data["data"]["rasters"][start_index].raster.raster_name }, false);
-    //             // console.log(copy_data["data"]["rasters"][start_index+1].raster.raster_name);
-    //             this.current_year = copy_data["data"]["rasters"][start_index].raster.period
-    //             active_period_index -= 1;
-    //         },
-    //         increase_year: function () {
-    //             start_index = start_index + 1
-    //             //this.current_year += 1;
-    //             layer_wms.setParams({ layers: copy_data["data"]["rasters"][start_index].raster.raster_name }, false);
-    //             // console.log(copy_data["data"]["rasters"][start_index].raster.raster_name);
-    //             this.current_year = copy_data["data"]["rasters"][start_index].raster.period;
-    //             active_period_index += 1
-    //         }
-    //     }
-    // })
-
-
 
     var main_app = new Vue({
         el: '#main_app',
@@ -132,6 +102,11 @@ function init_app() {
 
             },
             update_postfix() {
+                /**
+                 * Update postfix for adding to file 
+                 * Sample postfix is with_h_focal in Day_with_snow_1951_1980_with_h_focal.tif
+                 * It may change in different group
+                 */
                 this.selected_postfix = _.filter(this.loaded_rasters.groups[0].indicators, (obj) => {
                     return obj.name === this.selected_indicator
                 })[0].postfix_in_file
@@ -150,6 +125,7 @@ function init_app() {
                     return obj.name === this.selected_indicator
                 })[0]
 
+                // get first aviable period and set its as default in dropdown list
                 this.selected_period = aviable_periods.periods[0]
                 this.aviable_periods = aviable_periods.periods
                 return aviable_periods.periods
@@ -166,13 +142,13 @@ function init_app() {
                         case "year":
                             return { key:"year",alias: "Год" }
                         case "jan":
-                            return { key:"jul",alias: "Январь" }
+                            return { key:"jan",alias: "Январь" }
                         case "jul":
                             return { key:"jul",alias: "Июль" }
                         case "oct":
                             return { key:"oct",alias: "Октябрь" }
                         case "apr":
-                            return { key:"jul",alias: "Апрель" }
+                            return { key:"apr",alias: "Апрель" }
                         default:
                             return { key:"None",alias: "Нет данных" }
                     }
