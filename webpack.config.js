@@ -6,6 +6,7 @@ const NODE_ENV = process.env.NODE_ENV || "developmnet";
 const VueLoaderPlugin = require('vue-loader/lib/plugin');
 
 module.exports = {
+  //mode:"development",
   //watch: NODE_ENV == "developmnet",
   watch: true,
   watchOptions: {
@@ -13,7 +14,7 @@ module.exports = {
   },
   // если есть переменная то создаем сорс мэпы, если нет то вообще их не создаем
   //devtool: NODE_ENV == "developmnet" ? "eval" : null,
-  devtool:"eval-source-map",
+  devtool:"source-map",
   //либо "cheap-inline-module-source-map" на продакшн можно source-map
   entry: './src/index.ts',
   output: {
@@ -33,8 +34,11 @@ module.exports = {
     rules: [
       {
         test: /\.tsx?$/,
-        use: 'ts-loader',
-        exclude: /node_modules/
+        loader: 'ts-loader',
+        exclude: /node_modules/,
+        options: {
+          appendTsSuffixTo: [/\.vue$/],
+        }
       },
       {
         test: /\.vue$/,
@@ -44,11 +48,19 @@ module.exports = {
             // Since sass-loader (weirdly) has SCSS as its default parse mode, we map
             // the "scss" and "sass" values for the lang attribute to the right configs here.
             // other preprocessors should work out of the box, no loader config like this necessary.
+            //'scss':'style!css!sass',
             'scss': 'vue-style-loader!css-loader!sass-loader',
             'sass': 'vue-style-loader!css-loader!sass-loader?indentedSyntax',
           }
           // other vue-loader options go here
         }
+      },
+      {
+        test: /\.scss$/,
+        use: [
+          'vue-style-loader',
+          'css-loader'
+        ]
       }
     ]
   },

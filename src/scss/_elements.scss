@@ -30,7 +30,7 @@ $hover_color:rgba(172, 164, 164, 0.548);// hover on indicators
 
 
 
-.indicators a{
+.indicators a div{
     &:before {
         content: "";
         background: #fff;

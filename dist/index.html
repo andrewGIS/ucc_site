@@ -20,48 +20,9 @@
 </head>
 
 <body>
-
 	<div id="map"></div>
 	<div id="main_app">
-		<header class="main_header offset-sm-3 offset-md-3 col-xl-6 col-sm-6 col-12 col-md-6 col-lg-6 rounded">
-			Атласная информационная система "Изменение климата Урала"
-		</header>
-		<div id="indicators-app" class="indicators rounded">
-			<a :class="{active_icon:temp_active}" class=temperature v-on:click="show_temp"><span class=temperature
-					v-bind:class="{active_indicator:temp_active}">Климатические показатели 3-ч часовые</span></a>
-			<template v-if="temp_active">
-				<select name="select_subindicator">
-					<option @click=change_indicator($event) v-for="indicator in aviable_indicator_list"
-						:value="indicator.name">
-						{{indicator.alias}}</option>
-				</select>
-				<select name="select_period" v-model="selected_period">
-					<option @click=update_map() v-for="year,index in aviable_periods" :value="year">
-						{{year.replace("_","-")}}</option>
-				</select>
-				<select name="select_month" v-model="selected_month">
-					<option @click=update_map() v-for="month in aviable_months" :value="month.key">
-						{{month.alias}}</option>
-				</select>
 
-			</template>
-			<a class="radar"><span class="radar">Тест</span></a>
-			<a class="radar"><span class="radar">Осадки</span></a>
-			<a class="radar"><span class="radar">Радар погоды</span></a>
-		</div>
-		<select name="select_indicator">
-			<option value="volvo">1995 - 1999</option>
-			<option value="saab">1995 - 1999</option>
-			<option value="fiat">1995 - 1999</option>
-			<option value="audi">1995 - 1999</option>
-		</select>
-		<!-- <div id="slider-app"
-			class="slider_box offset-sm-3 offset-md-3 col-xl-6 col-sm-6 col-12 col-md-6 col-lg-6 fixed-bottom rounded ">
-			<button v-on:click="decrease_year" type="button"
-				class="btn btn-sm year_switcher previous float-left">&lt</button>
-			<button v-on:click="increase_year" class="btn btn-sm year_switcher next float-right">&gt</button>
-			<div class="current_year">{{ current_year }}</div>
-		</div> -->
 	</div>
 
 

@@ -15,7 +15,8 @@
             "reloadOnChange": {
                 "watch": ["${workspaceFolder}/dist/*.html","${workspaceFolder}/dist/*.js","${workspaceFolder}/css/*.css"],
                 "ignore": [ "${workspaceFolder}/node_modules/**" ]
-            }
+            },
+            "sourceMaps": "client"
         }
     ]
 }

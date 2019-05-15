@@ -30,6 +30,30 @@ export const loaded_data = {
                     postfix_in_file:"with_h_focal.tif"
                 }
             ]
+        },
+        {
+            name: "Days_data_AISORI_focal",
+            alias: "Дни какие-то",
+            indicators: [
+                {
+                    name: "T_mean_min_year",
+                    alias:"Средняя минимальная температура",
+                    periods:['1951_1980', '1961_1990', '1971_2000', '1981_2010'],
+                    months:['None'],
+                    style:"raster",
+                    postfix_in_file:"with_curv_foc.tif"
+
+                },
+                {
+                    name: "T_mean_max_year",
+                    alias:"Средняя максимальная температура",
+                    periods:['1951_1980', '1961_1990', '1971_2000', '1981_2010'],
+                    months:['None'],
+                    style:"raster",
+                    postfix_in_file:"with_lat_long_h_foc.tif"
+
+                }
+            ]
         }
     ]
 }
