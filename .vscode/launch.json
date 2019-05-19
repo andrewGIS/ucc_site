@@ -5,6 +5,15 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "type": "chrome",
+            "request": "launch",
+            "name": "Launch Chrome",
+            "url": "http://localhost:8090",
+            "webRoot": "${workspaceFolder}",
+            "file": "${workspaceFolder}/dist/index.html",
+            "sourceMaps": true
+        },
+        {
             "name": "Launch index.html",
             "type": "firefox",
             "request": "launch",

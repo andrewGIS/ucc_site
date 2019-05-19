@@ -49,7 +49,7 @@
   z-index: -10;
 }
 
-.indicators {
+ .indicators {
   height: 200px;
   width: 200px;
   display: -webkit-box;
@@ -66,7 +66,7 @@
   z-index: 3;
   white-space: nowrap;
 }
-
+/*
 .indicators a:before {
   content: "";
   background: #fff;
@@ -103,9 +103,9 @@
 
 #indicators a span.radar:before {
   background-position: -180px;
-}
+} */
 
-select[name="select_month"], select[name="select_period"], select[name="select_subindicator"] {
+/* select[name="select_month"], select[name="select_period"], select[name="select_subindicator"] {
   left: 2.142em;
   font-size: 84%;
   padding: 0.45em 1.25em;
@@ -126,7 +126,7 @@ select[name="select_month"], select[name="select_period"], select[name="select_s
   outline: none;
   border: 1px solid #DDD;
   height: 30px;
-}
+} */
 
 .active_indicator {
   cursor: pointer;

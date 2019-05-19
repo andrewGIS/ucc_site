@@ -13,7 +13,6 @@ function init_main_app() {
 
     //import * from "./components/
 
-    var layer_wms: L.TileLayer.WMS
     var first_layer = "ucc:Day_with_snow_1951_1980_with_h_focal.tif";
     var layer_wms = new L.TileLayer.WMS(
         "http://localhost:8080/geoserver/ucc/ows?",
@@ -24,9 +23,6 @@ function init_main_app() {
             opacity: 0.5
         }
     );
-
-
-    let start_map: any
 
     let v = new Vue({
         el: '#main_app',
@@ -53,11 +49,11 @@ function init_main_app() {
 
 
             },
-            show_lister(event:Event|any) {
+            show_lister(event) {
                 //console.log(event.target.className);
                 this.active_group = event.target.className
             },
-            update_map (params:L.WMSParams){
+            update_map (params){
                 this.main_layer.setParams(params);
                 
             }
