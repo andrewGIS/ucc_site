@@ -14,20 +14,19 @@ function init_main_app() {
     //import * from "./components/
 
     var first_layer = "ucc:Day_with_snow_1951_1980_with_h_focal.tif";
-    var layer_wms = new L.TileLayer.WMS(
+    var layer_wms = L.tileLayer.wms(
         "http://localhost:8080/geoserver/ucc/ows?",
         {
             layers: first_layer,
             format: "image/png",
             transparent: true,
             opacity: 0.5
-        }
+        },true
     );
-
     let v = new Vue({
         el: '#main_app',
         data: {
-            init_map: start_map,
+            init_map: first_layer,
             main_layer: layer_wms,
             active_group:"temperature"
         },
@@ -49,13 +48,11 @@ function init_main_app() {
 
 
             },
-            show_lister(event) {
+            show_lister(event,index) {
                 //console.log(event.target.className);
-                this.active_group = event.target.className
-            },
-            update_map (params){
-                this.main_layer.setParams(params);
-                
+                this.active_group = event.target.className;
+                this.$children[index].update_layer();
+                this.$children[index].brake_animation();
             }
         },
         mounted() {
@@ -74,26 +71,24 @@ function init_main_app() {
             </header>
             <div id="indicators-app" class="indicators rounded">
                 <div class="active_icon class=temperature">
-                    <span class="temperature" @click="show_lister">
+                    <span class="temperature" @click="show_lister($event,0)">
                         Климатические
                         показатели 3-ч часовые
                         
                     </span>
                 </div>
-                    <lister v-show="active_group==='temperature'" :index_group="0" :layer_wms="main_layer" :update_map="update_map"/>
+                    <lister v-show="active_group==='temperature'" ref="group" :index_group="0" :layer_wms="main_layer" />
                 <div  class="temperature" >
-                    <span class="some_days" @click="show_lister">
+                    <span class="some_days" @click="show_lister($event,1)">
                         Какие то дни
                     </span>
                 </div>
-                    <lister v-show="active_group==='some_days'" :index_group="1" :layer_wms="main_layer" :update_map="update_map"/>
+                    <lister v-show="active_group==='some_days'" :index_group="1" :layer_wms="main_layer" />
                 <div>
-                    Текущее показатель {{main_layer.wmsParams.layers}}
+                    Текущий показатель {{main_layer.wmsParams.layers}}
                 </div>
-                <button @click=update_map>
-                    Обновить карту 
-                </button>
             </div>
+
         </div>
         `
     })

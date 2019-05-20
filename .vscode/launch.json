@@ -11,7 +11,8 @@
             "url": "http://localhost:8090",
             "webRoot": "${workspaceFolder}",
             "file": "${workspaceFolder}/dist/index.html",
-            "sourceMaps": true
+            "sourceMaps": true,
+            
         },
         {
             "name": "Launch index.html",

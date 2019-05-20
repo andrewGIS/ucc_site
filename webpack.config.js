@@ -16,7 +16,7 @@ module.exports = {
   //devtool: NODE_ENV == "developmnet" ? "eval" : null,
   devtool:"source-map",
   //либо "cheap-inline-module-source-map" на продакшн можно source-map
-  entry: './src/index.ts',
+  entry: './src/index.js',
   output: {
     path: path.resolve(__dirname, './dist'),
     publicPath: '/dist/',
@@ -24,7 +24,7 @@ module.exports = {
   },
   // для файлов
   resolve:{
-    extensions:['.js','.ts','.tsx', '.vue', '.json'],// чтобы vue собирался добавлены расширения , '.vue', '.json'
+    extensions:['.js', '.vue', '.json'],// чтобы vue собирался добавлены расширения , '.vue', '.json'
     alias: {
       // без этой строчки не собирался vue 
       'vue$': 'vue/dist/vue.esm.js'
@@ -32,14 +32,6 @@ module.exports = {
   },
   module:{
     rules: [
-      {
-        test: /\.tsx?$/,
-        loader: 'ts-loader',
-        exclude: /node_modules/,
-        options: {
-          appendTsSuffixTo: [/\.vue$/],
-        }
-      },
       {
         test: /\.vue$/,
         loader: 'vue-loader',
@@ -61,6 +53,18 @@ module.exports = {
           'vue-style-loader',
           'css-loader'
         ]
+      },
+      {
+        test: /\.(png|jpg|gif|svg)$/,
+        loader: 'file-loader',
+        options: {
+          name: '[name].[ext]?[hash]'
+        }
+      },
+      {
+        test: /\.js$/,
+        loader: 'babel-loader',
+        exclude: /node_modules/
       }
     ]
   },

@@ -2,76 +2,110 @@
 <template >
   <div>
     <div class="container">
-      <select name="select_subindicator" v-model="selected_indicator">
+      <select
+        v-on:change="change_indicator"
+        name="select_subindicator"
+        v-model="selected_indicator"
+      >
         <option
-          @click="change_indicator"
           v-for="indicator in load_aviable_indicator_list()"
           :value="indicator.name"
           :key="indicator.name"
         >{{indicator.alias}}</option>
       </select>
-      <button @click="start_anim_periods()">Play</button>
-      <select name="select_period" v-model="selected_period">
-        <option
-          @click="update_params()"
-          v-for="year in aviable_periods"
-          :value="year"
-          :key="year"
-        >{{year.replace("_","-")}}</option>
+      <button @click="start_anim_periods()">Play year</button>
+      <select v-on:change="update_layer()" name="select_period" v-model="selected_period">
+        <option v-for="year in aviable_periods" :value="year" :key="year">{{year.replace("_","-")}}</option>
       </select>
-      <button @click="start_anim_monts()">Play</button>
-      <select name="select_month" v-model="selected_month">
-        <option
-          @click="update_params()"
-          v-for="month in aviable_months"
-          :value="month.key"
-          :key="month.key"
-        >{{month.alias}}</option>
+      <button @click="start_anim_monts">Play month</button>
+      <button @click="brake_animation">Brake animation</button>
+      <select v-on:change="update_layer()" name="select_month" v-model="selected_month">
+        <option v-for="month in aviable_months" :value="month.key" :key="month.key">{{month.alias}}</option>
       </select>
     </div>
   </div>
 </template>
 
+
 <script >
 import Vue from "vue";
-import { loaded_data } from "../indicators_meta_v2";
+import { loaded_data } from "../indicators_meta_v2.js";
 import * as _ from "lodash";
 import * as L from "leaflet";
+import { setTimeout } from "timers";
 
 // interface month {
 //   key: string;
 //   alias: string;
 // }
 
-export default Vue.extend({
+export default {
   props: {
     index_group: Number,
-    layer_wms: L.TileLayer.WMS,
-    update_map: Function
+    layer_wms: {
+      required: true
+    }
   },
   data() {
     return {
       loaded_rasters: loaded_data,
-      selected_indicator: "",
-      selected_period: "",
-      selected_month: "",
-      selected_postfix: "",
-      selected_style: "",
+      selected_indicator: " ",
+      selected_period: " ",
+      selected_month: "apr",
+      selected_postfix: " ",
+      selected_style: " ",
       aviable_months: [{ key: "jan", alias: "Январь" }],
-      aviable_periods: [""]
+      aviable_periods: [" "],
+      brake_animation_flag: false,
+      timer:""
     };
   },
   methods: {
-    change_indicator() {
-      this.selected_indicator = event.explicitOriginalTarget._value;
+    brake_animation() {
+      // clearTimeout(this.timer);
+      this.layer_wms.off();
+      this.brake_animation_flag = true
+    },
+    sleep(ms) {
+      return new Promise(resolve => setTimeout(resolve, ms));
+    },
+    load_aviable_months() {
+      let aviable_months = _.filter(
+        this.loaded_rasters.groups[this.index_group].indicators,
+        obj => {
+          return obj.name === this.selected_indicator;
+        }
+      )[0];
+
+      this.selected_month = aviable_months.months[0];
+      this.aviable_months = _.map(aviable_months.months, month => {
+        switch (month) {
+          case "year":
+            return { key: "year", alias: "Год" };
+          case "jan":
+            return { key: "jan", alias: "Январь" };
+          case "jul":
+            return { key: "jul", alias: "Июль" };
+          case "oct":
+            return { key: "oct", alias: "Октябрь" };
+          case "apr":
+            return { key: "apr", alias: "Апрель" };
+          default:
+            return { key: "None", alias: "Нет данных" };
+        }
+      });
+      return aviable_months.months;
+    },
+    change_indicator(event) {
+      this.selected_indicator = event.target.value;
       //console.log("change_indicator => " + this.selected_indicator);
       this.update_postfix_for_group();
       this.update_style_for_indicator();
       this.load_aviable_months();
       this.load_aviable_periods();
-      this.update_params();
+      this.update_layer();
     },
-    update_params() {
+    update_layer() {
       //console.log(`ucc:${this.selected_indicator}_${this.current_year}_${this.selected_month}_${this.selected_postfix}`)
       //console.log(this.selected_month)
       //console.log(this.selected_month)
@@ -90,7 +124,7 @@ export default Vue.extend({
         //   },
         //   false
         // );
-        this.update_map({
+        this.layer_wms.setParams({
           layers: `ucc:${this.selected_indicator}_${this.selected_period}_${
             this.selected_postfix
           }`,
@@ -102,7 +136,7 @@ export default Vue.extend({
         //     this.selected_month
         //   }_${this.selected_postfix}`
         // );
-        this.update_map({
+        this.layer_wms.setParams({
           layers: `ucc:${this.selected_indicator}_${this.selected_period}_${
             this.selected_month
           }_${this.selected_postfix}`,
@@ -147,33 +181,6 @@ export default Vue.extend({
       this.aviable_periods = aviable_periods.periods;
       return aviable_periods.periods;
     },
-    load_aviable_months() {
-      let aviable_months = _.filter(
-        this.loaded_rasters.groups[this.index_group].indicators,
-        obj => {
-          return obj.name === this.selected_indicator;
-        }
-      )[0];
-
-      this.selected_month = aviable_months.months[0];
-      this.aviable_months = _.map(aviable_months.months, month => {
-        switch (month) {
-          case "year":
-            return { key: "year", alias: "Год" };
-          case "jan":
-            return { key: "jan", alias: "Январь" };
-          case "jul":
-            return { key: "jul", alias: "Июль" };
-          case "oct":
-            return { key: "oct", alias: "Октябрь" };
-          case "apr":
-            return { key: "apr", alias: "Апрель" };
-          default:
-            return { key: "None", alias: "Нет данных" };
-        }
-      });
-      return aviable_months.months;
-    },
     load_aviable_indicator_list() {
       return _.filter(
         this.loaded_rasters.groups[this.index_group].indicators,
@@ -183,23 +190,101 @@ export default Vue.extend({
       );
     },
     start_anim_periods() {
-      for (let index = 0; index < this.aviable_periods.length; index++) {
-        this.selected_period = this.aviable_periods[index];
-        this.update_params();
-      }
+      // var stop = function() {
+      //   if (animationId !== null) {
+      //     window.clearInterval(animationId);
+      //     animationId = null;
+      //   }
+      // };
     },
     start_anim_monts() {
-      var index = 0;
-      while(index !== this.aviable_months.length-1) {
-        console.log(index)
-        this.layer_wms.once("load",function(){
-          console.log("loaded")
-          index = index+1
-          console.log(index)
-          //this.selected_month = this.aviable_months[index].key;
-          //this.update_params();
-         })
-      }
+      var index = _.findIndex(this.aviable_months, {
+        key: this.selected_month
+      });
+      var inst = this;
+
+      this.layer_wms.redraw();
+      this.layer_wms.on("load", function() {
+        //     //console.log(inst.selected_month);
+        if (index < inst.aviable_months.length) {
+          inst.timer = setTimeout(function() {
+              if (!inst.brake_animation_flag){
+              inst.selected_month = inst.aviable_months[index].key;
+              inst.update_layer();
+              index += 1;
+              console.log("loaded");
+              inst.layer_wms.redraw();
+              }
+              else{
+                inst.brake_animation_flag = false;
+                return 
+              }
+          },2000);
+        }
+      });
+      //this.layer_wms.off();
+      //index = 0;
+      //this.layer_wms.off();
+      // var stop = function() {
+      //   if (animationId !== null) {
+      //     window.clearInterval(animationId);
+      //     animationId = null;
+      //   }
+      // };
+      // var set_month = function() {
+      //   if (index < inst.aviable_periods.length - 1) {
+      //     inst.selected_month = inst.aviable_periods[index].key;
+      //     inst.update_layer();
+      //     index += 1;
+      //   } else {
+      //     stop();
+      //   }
+      // };
+
+      // var play = function() {
+      //   stop();
+      //   animationId = window.setInterval(set_month, 2000);
+      // };
+      // play();
+
+      // while(index!== this.aviable_months.length -1){
+      //   console.log("loaded")
+
+      //   var flag = true
+      //   while (flag){
+      //     index +=1
+      //     this.selected_month = this.aviable_months[index+1]
+      //     this.update_layer();
+      //     console.log( this.layer_wms.isLoading());
+      //     this.layer_wms.redraw();
+      //     console.log("loading")
+      //   }
+      // }
+
+      // for (const mon of inst.aviable_months) {
+      //   this.selected_month = mon.key
+      //   this.update_layer();
+      //   window.setInterval(this.update_layer(),2000)
+      // }
+      //     //const element = array[index];
+      //     this.layer_wms.on("load", function() {
+      //       //console.log(inst.selected_month);
+      //       //console.log("loaded");
+      //       inst.update_layer();
+      //       //index = index + 1;
+      //       console.log(mon.key);
+      //       //inst.update_layer();
+      //     });
+      //     this.selected_month = mon.key;
+      //     this.layer_wms.redraw();
+      //     //setTimeout("",2000)
+      //   }
+
+      //console.log(index);
+
+      //this.selected_period = this.aviable_periods[index];
+      //this.update_params();
+      //}
     }
   },
   mounted: function() {
@@ -213,13 +298,13 @@ export default Vue.extend({
     this.update_style_for_indicator();
     this.load_aviable_periods();
     this.load_aviable_months();
-    console.log(
-      `ucc:${this.selected_indicator}_${this.selected_period}_${
-        this.selected_month
-      }_${this.selected_postfix}`
-    );
+    // console.log(
+    //   `ucc:${this.selected_indicator}_${this.selected_period}_${
+    //     this.selected_month
+    //   }_${this.selected_postfix}`
+    // );
   }
-});
+};
 </script>
 
 <style lang="scss" scoped>
