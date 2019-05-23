@@ -41,12 +41,23 @@
 
 /* Sass Document */
 #map {
+  width:50%;
   position: absolute;
   top: 0px;
   right: 0px;
   bottom: 0px;
   left: 0px;
   z-index: -10;
+}
+#map_2 {
+  /*width:50%;*/
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  bottom: 0px;
+  left: 50%;
+  z-index: -9;
+  border:2px solid black;
 }
 
  .indicators {
@@ -61,6 +72,23 @@
           flex-direction: column;
   position: absolute;
   margin-left: 5px;
+  font-size: 84%;
+  bottom: 9.5em;
+  z-index: 3;
+  white-space: nowrap;
+}
+.indicators_2 {
+  height: 200px;
+  width: 200px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  position: absolute;
+  margin-left: calc(50% + 5px);
   font-size: 84%;
   bottom: 9.5em;
   z-index: 3;

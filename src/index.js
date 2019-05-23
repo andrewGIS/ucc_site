@@ -5,6 +5,7 @@ import lister from "./components/lister.vue"
 document.addEventListener("DOMContentLoaded", function (event) {
     //load_map();
     init_main_app();
+    init_main_app2();
 
 });
 
@@ -52,7 +53,11 @@ function init_main_app() {
                 //console.log(event.target.className);
                 this.active_group = event.target.className;
                 this.$children[index].update_layer();
-                this.$children[index].brake_animation();
+                for (let index = 0; index < this.$children.length; index++) {
+                    const element = this.$children[index];
+                    element.brake_animation();
+                }
+                //this.$children[index].brake_animation();
             }
         },
         mounted() {

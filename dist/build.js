@@ -132,6 +132,10 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
 
 
 
@@ -169,8 +173,9 @@ __webpack_require__.r(__webpack_exports__);
   methods: {
     brake_animation: function brake_animation() {
       // clearTimeout(this.timer);
-      this.layer_wms.off();
+      //this.layer_wms.off();
       this.brake_animation_flag = true;
+      Object(timers__WEBPACK_IMPORTED_MODULE_4__["clearTimeout"])(this.timer);
     },
     sleep: function sleep(ms) {
       return new Promise(function (resolve) {
@@ -297,13 +302,14 @@ __webpack_require__.r(__webpack_exports__);
     start_anim_monts: function start_anim_monts() {
       var index = lodash__WEBPACK_IMPORTED_MODULE_2__["findIndex"](this.aviable_months, {
         key: this.selected_month
-      });
+      }) + 1;
       var inst = this;
+      var duration = 2000;
 
       this.layer_wms.redraw();
       this.layer_wms.on("load", function () {
         //     //console.log(inst.selected_month);
-        if (index < inst.aviable_months.length) {
+        if (index < inst.aviable_months.length && !this.brake_animation_flag) {
           inst.timer = Object(timers__WEBPACK_IMPORTED_MODULE_4__["setTimeout"])(function () {
             if (!inst.brake_animation_flag) {
               inst.selected_month = inst.aviable_months[index].key;
@@ -313,12 +319,13 @@ __webpack_require__.r(__webpack_exports__);
               inst.layer_wms.redraw();
             } else {
               inst.brake_animation_flag = false;
+              //inst.brake_animation();
               return;
             }
-          }, 2000);
+          }, duration);
         }
       });
-      //this.layer_wms.off();
+      //
       //index = 0;
       //this.layer_wms.off();
       // var stop = function() {
@@ -383,6 +390,59 @@ __webpack_require__.r(__webpack_exports__);
       //}
     }
   },
+  computed: {
+    all_dates: function all_dates() {
+      var full_date = [];
+      var _iteratorNormalCompletion = true;
+      var _didIteratorError = false;
+      var _iteratorError = undefined;
+
+      try {
+        for (var _iterator = this.aviable_periods[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+          var period = _step.value;
+          var _iteratorNormalCompletion2 = true;
+          var _didIteratorError2 = false;
+          var _iteratorError2 = undefined;
+
+          try {
+            for (var _iterator2 = this.aviable_months[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+              var month = _step2.value;
+
+              full_date.push(period.replace("_", '-') + "  " + month.alias);
+            }
+          } catch (err) {
+            _didIteratorError2 = true;
+            _iteratorError2 = err;
+          } finally {
+            try {
+              if (!_iteratorNormalCompletion2 && _iterator2.return) {
+                _iterator2.return();
+              }
+            } finally {
+              if (_didIteratorError2) {
+                throw _iteratorError2;
+              }
+            }
+          }
+        }
+      } catch (err) {
+        _didIteratorError = true;
+        _iteratorError = err;
+      } finally {
+        try {
+          if (!_iteratorNormalCompletion && _iterator.return) {
+            _iterator.return();
+          }
+        } finally {
+          if (_didIteratorError) {
+            throw _iteratorError;
+          }
+        }
+      }
+
+      return full_date;
+    }
+  },
   mounted: function mounted() {
     this.selected_indicator = lodash__WEBPACK_IMPORTED_MODULE_2__["map"](this.loaded_rasters.groups[this.index_group].indicators, function (obj) {
       return obj.name;
@@ -410,7 +470,7 @@ __webpack_require__.r(__webpack_exports__);
 
 exports = module.exports = __webpack_require__(/*! ../../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js")(false);
 // Module
-exports.push([module.i, "\n.container[data-v-ad080b4a] {\r\n  display: flex;\r\n  flex-direction: column;\r\n  font-size: 84%;\r\n  z-index: 3;\r\n  white-space: nowrap;\n}\r\n", ""]);
+exports.push([module.i, "\n.container[data-v-ad080b4a] {\r\n  width:100%;\r\n  display: flex;\r\n  flex-direction: column;\r\n  font-size: 84%;\r\n  z-index: 3;\r\n  white-space: nowrap;\n}\n.all_dates[data-v-ad080b4a]{\r\n  width: 300 px;\r\n  position: relative;\r\n  border:2px solid black;\r\n  display: flex;\r\n  flex-direction: row;\r\n  bottom:10%;\r\n  justify-content: space-between;\nli{\r\n    padding:10px;\r\n    margin:10px;\r\n    border: 2px solid red;\n}\n}\r\n", ""]);
 
 
 
@@ -32191,6 +32251,21 @@ var render = function() {
           )
         }),
         0
+      ),
+      _vm._v(" "),
+      _c(
+        "div",
+        { staticClass: "all_dates" },
+        [
+          _vm._l(_vm.all_dates, function(date) {
+            return _c("li", { key: date, attrs: { value: date } }, [
+              _vm._v(_vm._s(date))
+            ])
+          }),
+          _vm._v(" "),
+          _c("li")
+        ],
+        2
       )
     ])
   ])
@@ -44752,6 +44827,7 @@ __webpack_require__.r(__webpack_exports__);
 document.addEventListener("DOMContentLoaded", function (event) {
     //load_map();
     init_main_app();
+    init_main_app2();
 });
 
 function init_main_app() {
@@ -44791,7 +44867,11 @@ function init_main_app() {
                 //console.log(event.target.className);
                 this.active_group = event.target.className;
                 this.$children[index].update_layer();
-                this.$children[index].brake_animation();
+                for (var _index = 0; _index < this.$children.length; _index++) {
+                    var element = this.$children[_index];
+                    element.brake_animation();
+                }
+                //this.$children[index].brake_animation();
             }
         },
         mounted: function mounted() {

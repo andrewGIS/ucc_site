@@ -22,6 +22,10 @@
       <select v-on:change="update_layer()" name="select_month" v-model="selected_month">
         <option v-for="month in aviable_months" :value="month.key" :key="month.key">{{month.alias}}</option>
       </select>
+      <div class="all_dates">
+        <li v-for="date in all_dates" :value="date" :key="date">{{date}}</li>
+        <li></li>
+      </div>
     </div>
   </div>
 </template>
@@ -32,7 +36,7 @@ import Vue from "vue";
 import { loaded_data } from "../indicators_meta_v2.js";
 import * as _ from "lodash";
 import * as L from "leaflet";
-import { setTimeout } from "timers";
+import { setTimeout, clearTimeout } from "timers";
 
 // interface month {
 //   key: string;
@@ -57,14 +61,15 @@ export default {
       aviable_months: [{ key: "jan", alias: "Январь" }],
       aviable_periods: [" "],
       brake_animation_flag: false,
-      timer:""
+      timer: ""
     };
   },
   methods: {
     brake_animation() {
       // clearTimeout(this.timer);
-      this.layer_wms.off();
-      this.brake_animation_flag = true
+      //this.layer_wms.off();
+      this.brake_animation_flag = true;
+      clearTimeout(this.timer);
     },
     sleep(ms) {
       return new Promise(resolve => setTimeout(resolve, ms));
@@ -198,31 +203,33 @@ export default {
       // };
     },
     start_anim_monts() {
-      var index = _.findIndex(this.aviable_months, {
-        key: this.selected_month
-      });
+      var index =
+        _.findIndex(this.aviable_months, {
+          key: this.selected_month
+        }) + 1;
       var inst = this;
+      var duration = 2000;
 
       this.layer_wms.redraw();
       this.layer_wms.on("load", function() {
         //     //console.log(inst.selected_month);
-        if (index < inst.aviable_months.length) {
+        if (index < inst.aviable_months.length && !this.brake_animation_flag) {
           inst.timer = setTimeout(function() {
-              if (!inst.brake_animation_flag){
+            if (!inst.brake_animation_flag) {
               inst.selected_month = inst.aviable_months[index].key;
               inst.update_layer();
               index += 1;
               console.log("loaded");
               inst.layer_wms.redraw();
-              }
-              else{
-                inst.brake_animation_flag = false;
-                return 
-              }
-          },2000);
+            } else {
+              inst.brake_animation_flag = false;
+              //inst.brake_animation();
+              return;
+            }
+          }, duration);
         }
       });
-      //this.layer_wms.off();
+      //
       //index = 0;
       //this.layer_wms.off();
       // var stop = function() {
@@ -287,6 +294,17 @@ export default {
       //}
     }
   },
+  computed: {
+    all_dates() {
+      var full_date = [];
+      for (const period of this.aviable_periods) {
+        for (const month of this.aviable_months) {
+          full_date.push(`${period.replace("_",'-')}  ${month.alias}`);
+        }
+      }
+      return full_date;
+    }
+  },
   mounted: function() {
     this.selected_indicator = _.map(
       this.loaded_rasters.groups[this.index_group].indicators,
@@ -309,11 +327,26 @@ export default {
 
 <style lang="scss" scoped>
 .container {
+  width:100%;
   display: flex;
   flex-direction: column;
   font-size: 84%;
   z-index: 3;
   white-space: nowrap;
+}
+.all_dates{
+  width: 300 px;
+  position: relative;
+  border:2px solid black;
+  display: flex;
+  flex-direction: row;
+  bottom:10%;
+  justify-content: space-between;
+  li{
+    padding:10px;
+    margin:10px;
+    border: 2px solid red;
+  }
 }
 </style>
 
