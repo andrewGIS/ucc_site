@@ -149,6 +149,7 @@ __webpack_require__.r(__webpack_exports__);
 // }
 
 /* harmony default export */ __webpack_exports__["default"] = ({
+  name: "lister",
   props: {
     index_group: Number,
     layer_wms: {
@@ -461,6 +462,100 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./node_modules/babel-loader/lib/index.js!./node_modules/vue-loader/lib/index.js?!./src/components/map.vue?vue&type=script&lang=js&":
+/*!*******************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib!./node_modules/vue-loader/lib??vue-loader-options!./src/components/map.vue?vue&type=script&lang=js& ***!
+  \*******************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _lister_vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./lister.vue */ "./src/components/lister.vue");
+/* harmony import */ var leaflet__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! leaflet */ "./node_modules/leaflet/dist/leaflet-src.js");
+/* harmony import */ var leaflet__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(leaflet__WEBPACK_IMPORTED_MODULE_1__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+//import "../../node_modules/leaflet/dist/leaflet.css";
+
+
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+  name: "map_component",
+  props: ["map_id"],
+  data: function data() {
+    return {
+      init_map: null,
+      main_layer: new leaflet__WEBPACK_IMPORTED_MODULE_1___default.a.tileLayer.wms("http://localhost:8080/geoserver/ucc/ows?", {
+        layers: "ucc:Day_with_snow_1951_1980_with_h_focal.tif",
+        format: "image/png",
+        transparent: true,
+        opacity: 0.5
+      }, true),
+      active_group: "temperature"
+    };
+  },
+
+  methods: {
+    load_map: function load_map() {
+      this.init_map = new leaflet__WEBPACK_IMPORTED_MODULE_1___default.a.Map(this.map_id, {
+        minZoom: 4,
+        maxZoom: 6
+      });
+      this.init_map.setView(new leaflet__WEBPACK_IMPORTED_MODULE_1___default.a.LatLng(59, 59), 4);
+
+      var osm_layer = new leaflet__WEBPACK_IMPORTED_MODULE_1___default.a.TileLayer("http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", { attribution: "attribution test" });
+
+      //this.main_layer = layer_wms;
+      //osm_layer.addTo(this.init_map);
+      this.main_layer.addTo(this.init_map);
+    },
+    show_lister: function show_lister(event, index) {
+      //console.log(event.target.className);
+      this.active_group = event.target.className;
+      this.$children[index].update_layer();
+      for (var _index = 0; _index < this.$children.length; _index++) {
+        var element = this.$children[_index];
+        element.brake_animation();
+      }
+      //this.$children[index].brake_animation();
+    },
+    update_map_size: function update_map_size() {
+      console.log("Map update");
+      this.init_map.invalidateSize(true);
+      //this.init_map.redraw();
+      this.main_layer.redraw();
+    }
+  },
+  mounted: function mounted() {
+    this.load_map();
+  },
+
+  components: {
+    lister: _lister_vue__WEBPACK_IMPORTED_MODULE_0__["default"]
+  }
+});
+
+/***/ }),
+
 /***/ "./node_modules/css-loader/dist/cjs.js!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/vue-loader/lib/index.js?!./src/components/lister.vue?vue&type=style&index=0&id=ad080b4a&lang=scss&scoped=true&":
 /*!**********************************************************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/css-loader/dist/cjs.js!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/vue-loader/lib??vue-loader-options!./src/components/lister.vue?vue&type=style&index=0&id=ad080b4a&lang=scss&scoped=true& ***!
@@ -471,6 +566,21 @@ __webpack_require__.r(__webpack_exports__);
 exports = module.exports = __webpack_require__(/*! ../../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js")(false);
 // Module
 exports.push([module.i, "\n.container[data-v-ad080b4a] {\r\n  width:100%;\r\n  display: flex;\r\n  flex-direction: column;\r\n  font-size: 84%;\r\n  z-index: 3;\r\n  white-space: nowrap;\n}\n.all_dates[data-v-ad080b4a]{\r\n  width: 300 px;\r\n  position: relative;\r\n  border:2px solid black;\r\n  display: flex;\r\n  flex-direction: row;\r\n  bottom:10%;\r\n  justify-content: space-between;\nli{\r\n    padding:10px;\r\n    margin:10px;\r\n    border: 2px solid red;\n}\n}\r\n", ""]);
+
+
+
+/***/ }),
+
+/***/ "./node_modules/css-loader/dist/cjs.js!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/vue-loader/lib/index.js?!./src/components/map.vue?vue&type=style&index=0&lang=scss&":
+/*!*******************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/css-loader/dist/cjs.js!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/vue-loader/lib??vue-loader-options!./src/components/map.vue?vue&type=style&index=0&lang=scss& ***!
+  \*******************************************************************************************************************************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(/*! ../../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js")(false);
+// Module
+exports.push([module.i, "\n#map_1 {\r\n  position: absolute;\r\n  left: 0;\r\n  top: 0;\r\n  height: 100%;\r\n  width: 100%;\r\n  z-index: 1;\n}\n#map_2 {\r\n  position: absolute;\r\n  left: 0;\r\n  top: 0;\r\n  height: 100%;\r\n  width: 100%;\r\n  z-index: 1;\n}\n#map_3 {\r\n  position: absolute;\r\n  left: 0;\r\n  top: 0;\r\n  height: 100%;\r\n  width: 100%;\r\n  z-index: 1;\n}\r\n", ""]);
 
 
 
@@ -580,7 +690,7 @@ function toComment(sourceMap) {
 /***/ (function(module, exports, __webpack_require__) {
 
 /* @preserve
- * Leaflet 1.4.0, a JS library for interactive maps. http://leafletjs.com
+ * Leaflet 1.5.1+build.2e3e0ff, a JS library for interactive maps. http://leafletjs.com
  * (c) 2010-2018 Vladimir Agafonkin, (c) 2010-2011 CloudMade
  */
 
@@ -589,7 +699,7 @@ function toComment(sourceMap) {
 	undefined;
 }(this, (function (exports) { 'use strict';
 
-var version = "1.4.0";
+var version = "1.5.1+build.2e3e0ffb";
 
 /*
  * @namespace Util
@@ -707,8 +817,8 @@ function falseFn() { return false; }
 // @function formatNum(num: Number, digits?: Number): Number
 // Returns the number `num` rounded to `digits` decimals, or to 6 decimals by default.
 function formatNum(num, digits) {
-	var pow = Math.pow(10, (digits === undefined ? 6 : digits));
-	return Math.round(num * pow) / pow;
+	digits = (digits === undefined ? 6 : digits);
+	return +(Math.round(num + ('e+' + digits)) + ('e-' + digits));
 }
 
 // @function trim(str: String): String
@@ -1048,7 +1158,7 @@ var Events = {
 	 *
 	 * @alternative
 	 * @method off: this
-	 * Removes all listeners to all events on the object.
+	 * Removes all listeners to all events on the object. This includes implicitly attached events.
 	 */
 	off: function (types, fn, context) {
 
@@ -2228,9 +2338,11 @@ var Earth = extend({}, CRS, {
  * a sphere. Used by the `EPSG:3857` CRS.
  */
 
+var earthRadius = 6378137;
+
 var SphericalMercator = {
 
-	R: 6378137,
+	R: earthRadius,
 	MAX_LATITUDE: 85.0511287798,
 
 	project: function (latlng) {
@@ -2253,7 +2365,7 @@ var SphericalMercator = {
 	},
 
 	bounds: (function () {
-		var d = 6378137 * Math.PI;
+		var d = earthRadius * Math.PI;
 		return new Bounds([-d, -d], [d, d]);
 	})()
 };
@@ -2751,6 +2863,7 @@ function addDoubleTapListener(obj, handler, id) {
 				touch$$1 = newTouch;
 			}
 			touch$$1.type = 'dblclick';
+			touch$$1.button = 0;
 			handler(touch$$1);
 			last = null;
 		}
@@ -4888,9 +5001,15 @@ var Map = Evented.extend({
 		// this event. Also fired on mobile when the user holds a single touch
 		// for a second (also called long press).
 		// @event keypress: KeyboardEvent
-		// Fired when the user presses a key from the keyboard while the map is focused.
+		// Fired when the user presses a key from the keyboard that produces a character value while the map is focused.
+		// @event keydown: KeyboardEvent
+		// Fired when the user presses a key from the keyboard while the map is focused. Unlike the `keypress` event,
+		// the `keydown` event is fired for keys that produce a character value and for keys
+		// that do not produce a character value.
+		// @event keyup: KeyboardEvent
+		// Fired when the user releases a key from the keyboard while the map is focused.
 		onOff(this._container, 'click dblclick mousedown mouseup ' +
-			'mouseover mouseout mousemove contextmenu keypress', this._handleDOMEvent, this);
+			'mouseover mouseout mousemove contextmenu keypress keydown keyup', this._handleDOMEvent, this);
 
 		if (this.options.trackResize) {
 			onOff(window, 'resize', this._onResize, this);
@@ -4954,7 +5073,7 @@ var Map = Evented.extend({
 
 		var type = e.type;
 
-		if (type === 'mousedown' || type === 'keypress') {
+		if (type === 'mousedown' || type === 'keypress' || type === 'keyup' || type === 'keydown') {
 			// prevents outline when clicking on keyboard-focusable element
 			preventOutline(e.target || e.srcElement);
 		}
@@ -4993,7 +5112,7 @@ var Map = Evented.extend({
 			originalEvent: e
 		};
 
-		if (e.type !== 'keypress') {
+		if (e.type !== 'keypress' && e.type !== 'keydown' && e.type !== 'keyup') {
 			var isMarker = target.getLatLng && (!target._radius || target._radius <= 10);
 			data.containerPoint = isMarker ?
 				this.latLngToContainerPoint(target.getLatLng()) : this.mouseEventToContainerPoint(e);
@@ -5246,7 +5365,7 @@ var Map = Evented.extend({
 		}
 
 		// @event zoomanim: ZoomAnimEvent
-		// Fired at least once per zoom animation. For continous zoom, like pinch zooming, fired once per frame during zoom.
+		// Fired at least once per zoom animation. For continuous zoom, like pinch zooming, fired once per frame during zoom.
 		this.fire('zoomanim', {
 			center: center,
 			zoom: zoom,
@@ -5364,6 +5483,8 @@ var Control = Class.extend({
 			corner.appendChild(container);
 		}
 
+		this._map.on('unload', this.remove, this);
+
 		return this;
 	},
 
@@ -5380,6 +5501,7 @@ var Control = Class.extend({
 			this.onRemove(this._map);
 		}
 
+		this._map.off('unload', this.remove, this);
 		this._map = null;
 
 		return this;
@@ -5777,7 +5899,7 @@ var Layers = Control.extend({
 			input.className = 'leaflet-control-layers-selector';
 			input.defaultChecked = checked;
 		} else {
-			input = this._createRadioElement('leaflet-base-layers', checked);
+			input = this._createRadioElement('leaflet-base-layers_' + stamp(this), checked);
 		}
 
 		this._layerControlInputs.push(input);
@@ -6162,7 +6284,7 @@ var Attribution = Control.extend({
 
 		// @option prefix: String = 'Leaflet'
 		// The HTML text shown before the attributions. Pass `false` to disable.
-		prefix: '<a href="http://leafletjs.com" title="A JS library for interactive maps">Leaflet</a>'
+		prefix: '<a href="https://leafletjs.com" title="A JS library for interactive maps">Leaflet</a>'
 	},
 
 	initialize: function (options) {
@@ -6907,7 +7029,7 @@ var LonLat = {
  * @namespace Projection
  * @projection L.Projection.Mercator
  *
- * Elliptical Mercator projection — more complex than Spherical Mercator. Takes into account that Earth is a geoid, not a perfect sphere. Used by the EPSG:3395 CRS.
+ * Elliptical Mercator projection — more complex than Spherical Mercator. Assumes that Earth is an ellipsoid. Used by the EPSG:3395 CRS.
  */
 
 var Mercator = {
@@ -7067,7 +7189,7 @@ CRS.Simple = Simple;
  * @example
  *
  * ```js
- * var layer = L.Marker(latlng).addTo(map);
+ * var layer = L.marker(latlng).addTo(map);
  * layer.addTo(map);
  * layer.remove();
  * ```
@@ -7998,6 +8120,10 @@ var Marker = Layer.extend({
 		// `Map pane` where the markers icon will be added.
 		pane: 'markerPane',
 
+		// @option pane: String = 'shadowPane'
+		// `Map pane` where the markers shadow will be added.
+		shadowPane: 'shadowPane',
+
 		// @option bubblingMouseEvents: Boolean = false
 		// When `true`, a mouse event on this marker will trigger the same event on the map
 		// (unless [`L.DomEvent.stopPropagation`](#domevent-stoppropagation) is used).
@@ -8088,6 +8214,12 @@ var Marker = Layer.extend({
 	setZIndexOffset: function (offset) {
 		this.options.zIndexOffset = offset;
 		return this.update();
+	},
+
+	// @method getIcon: Icon
+	// Returns the current icon used by the marker
+	getIcon: function () {
+		return this.options.icon;
 	},
 
 	// @method setIcon(icon: Icon): this
@@ -8185,7 +8317,7 @@ var Marker = Layer.extend({
 		}
 		this._initInteraction();
 		if (newShadow && addShadow) {
-			this.getPane('shadowPane').appendChild(this._shadow);
+			this.getPane(options.shadowPane).appendChild(this._shadow);
 		}
 	},
 
@@ -8269,7 +8401,9 @@ var Marker = Layer.extend({
 	_updateOpacity: function () {
 		var opacity = this.options.opacity;
 
-		setOpacity(this._icon, opacity);
+		if (this._icon) {
+			setOpacity(this._icon, opacity);
+		}
 
 		if (this._shadow) {
 			setOpacity(this._shadow, opacity);
@@ -8406,6 +8540,9 @@ var Path = Layer.extend({
 		setOptions(this, style);
 		if (this._renderer) {
 			this._renderer._updateStyle(this);
+			if (this.options.stroke && style.hasOwnProperty('weight')) {
+				this._updateBounds();
+			}
 		}
 		return this;
 	},
@@ -8847,14 +8984,19 @@ var Polyline = Path.extend({
 		this._rings = [];
 		this._projectLatlngs(this._latlngs, this._rings, pxBounds);
 
+		if (this._bounds.isValid() && pxBounds.isValid()) {
+			this._rawPxBounds = pxBounds;
+			this._updateBounds();
+		}
+	},
+
+	_updateBounds: function () {
 		var w = this._clickTolerance(),
 		    p = new Point(w, w);
-
-		if (this._bounds.isValid() && pxBounds.isValid()) {
-			pxBounds.min._subtract(p);
-			pxBounds.max._add(p);
-			this._pxBounds = pxBounds;
-		}
+		this._pxBounds = new Bounds([
+			this._rawPxBounds.min.subtract(p),
+			this._rawPxBounds.max.add(p)
+		]);
 	},
 
 	// recursively turns latlngs into a set of rings with projected coordinates
@@ -9284,10 +9426,10 @@ var GeoJSON = FeatureGroup.extend({
 	},
 
 	_setLayerStyle: function (layer, style) {
-		if (typeof style === 'function') {
-			style = style(layer.feature);
-		}
 		if (layer.setStyle) {
+			if (typeof style === 'function') {
+				style = style(layer.feature);
+			}
 			layer.setStyle(style);
 		}
 	}
@@ -9437,19 +9579,25 @@ var PointToGeoJSON = {
 };
 
 // @namespace Marker
-// @method toGeoJSON(): Object
+// @method toGeoJSON(precision?: Number): Object
+// `precision` is the number of decimal places for coordinates.
+// The default value is 6 places.
 // Returns a [`GeoJSON`](http://en.wikipedia.org/wiki/GeoJSON) representation of the marker (as a GeoJSON `Point` Feature).
 Marker.include(PointToGeoJSON);
 
 // @namespace CircleMarker
-// @method toGeoJSON(): Object
+// @method toGeoJSON(precision?: Number): Object
+// `precision` is the number of decimal places for coordinates.
+// The default value is 6 places.
 // Returns a [`GeoJSON`](http://en.wikipedia.org/wiki/GeoJSON) representation of the circle marker (as a GeoJSON `Point` Feature).
 Circle.include(PointToGeoJSON);
 CircleMarker.include(PointToGeoJSON);
 
 
 // @namespace Polyline
-// @method toGeoJSON(): Object
+// @method toGeoJSON(precision?: Number): Object
+// `precision` is the number of decimal places for coordinates.
+// The default value is 6 places.
 // Returns a [`GeoJSON`](http://en.wikipedia.org/wiki/GeoJSON) representation of the polyline (as a GeoJSON `LineString` or `MultiLineString` Feature).
 Polyline.include({
 	toGeoJSON: function (precision) {
@@ -9465,7 +9613,9 @@ Polyline.include({
 });
 
 // @namespace Polygon
-// @method toGeoJSON(): Object
+// @method toGeoJSON(precision?: Number): Object
+// `precision` is the number of decimal places for coordinates.
+// The default value is 6 places.
 // Returns a [`GeoJSON`](http://en.wikipedia.org/wiki/GeoJSON) representation of the polygon (as a GeoJSON `Polygon` or `MultiPolygon` Feature).
 Polygon.include({
 	toGeoJSON: function (precision) {
@@ -9501,7 +9651,9 @@ LayerGroup.include({
 		});
 	},
 
-	// @method toGeoJSON(): Object
+	// @method toGeoJSON(precision?: Number): Object
+	// `precision` is the number of decimal places for coordinates.
+	// The default value is 6 places.
 	// Returns a [`GeoJSON`](http://en.wikipedia.org/wiki/GeoJSON) representation of the layer group (as a GeoJSON `FeatureCollection`, `GeometryCollection`, or `MultiPoint`).
 	toGeoJSON: function (precision) {
 
@@ -9846,7 +9998,12 @@ var VideoOverlay = ImageOverlay.extend({
 
 		// @option loop: Boolean = true
 		// Whether the video will loop back to the beginning when played.
-		loop: true
+		loop: true,
+
+		// @option keepAspectRatio: Boolean = true
+		// Whether the video will save aspect ratio after the projection.
+		// Relevant for supported browsers. Browser compatibility- https://developer.mozilla.org/en-US/docs/Web/CSS/object-fit
+		keepAspectRatio: true
 	},
 
 	_initImage: function () {
@@ -9876,6 +10033,7 @@ var VideoOverlay = ImageOverlay.extend({
 
 		if (!isArray(this._url)) { this._url = [this._url]; }
 
+		if (!this.options.keepAspectRatio && vid.style.hasOwnProperty('objectFit')) { vid.style['objectFit'] = 'fill'; }
 		vid.autoplay = !!this.options.autoplay;
 		vid.loop = !!this.options.loop;
 		for (var i = 0; i < this._url.length; i++) {
@@ -9897,6 +10055,49 @@ var VideoOverlay = ImageOverlay.extend({
 
 function videoOverlay(video, bounds, options) {
 	return new VideoOverlay(video, bounds, options);
+}
+
+/*
+ * @class SVGOverlay
+ * @aka L.SVGOverlay
+ * @inherits ImageOverlay
+ *
+ * Used to load, display and provide DOM access to an SVG file over specific bounds of the map. Extends `ImageOverlay`.
+ *
+ * An SVG overlay uses the [`<svg>`](https://developer.mozilla.org/docs/Web/SVG/Element/svg) element.
+ *
+ * @example
+ *
+ * ```js
+ * var element = '<svg width="200" height="200" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><image xlink:href="https://mdn.mozillademos.org/files/6457/mdn_logo_only_color.png" height="200" width="200"/></svg>',
+ * 		 elementBounds = [ [ 32, -130 ], [ 13, -100 ] ];
+ * L.svgOverlay(element, elementBounds).addTo(map);
+ * ```
+ */
+
+var SVGOverlay = ImageOverlay.extend({
+	_initImage: function () {
+		var el = this._image = this._url;
+
+		addClass(el, 'leaflet-image-layer');
+		if (this._zoomAnimated) { addClass(el, 'leaflet-zoom-animated'); }
+
+		el.onselectstart = falseFn;
+		el.onmousemove = falseFn;
+	}
+
+	// @method getElement(): SVGElement
+	// Returns the instance of [`SVGElement`](https://developer.mozilla.org/docs/Web/API/SVGElement)
+	// used by this overlay.
+});
+
+
+// @factory L.svgOverlay(svg: String|SVGElement, bounds: LatLngBounds, options?: SVGOverlay options)
+// Instantiates an image overlay object given an SVG element and the geographical bounds it is tied to.
+// A viewBox attribute is required on the SVG element to zoom in and out properly.
+
+function svgOverlay(el, bounds, options) {
+	return new SVGOverlay(el, bounds, options);
 }
 
 /*
@@ -10051,6 +10252,38 @@ var DivOverlay = Layer.extend({
 			toBack(this._container);
 		}
 		return this;
+	},
+
+	_prepareOpen: function (parent, layer, latlng) {
+		if (!(layer instanceof Layer)) {
+			latlng = layer;
+			layer = parent;
+		}
+
+		if (layer instanceof FeatureGroup) {
+			for (var id in parent._layers) {
+				layer = parent._layers[id];
+				break;
+			}
+		}
+
+		if (!latlng) {
+			if (layer.getCenter) {
+				latlng = layer.getCenter();
+			} else if (layer.getLatLng) {
+				latlng = layer.getLatLng();
+			} else {
+				throw new Error('Unable to get source layer LatLng.');
+			}
+		}
+
+		// set overlay source to this layer
+		this._source = layer;
+
+		// update the overlay (content, layout, ect...)
+		this.update();
+
+		return latlng;
 	},
 
 	_updateContent: function () {
@@ -10507,28 +10740,8 @@ Layer.include({
 	// @method openPopup(latlng?: LatLng): this
 	// Opens the bound popup at the specified `latlng` or at the default popup anchor if no `latlng` is passed.
 	openPopup: function (layer, latlng) {
-		if (!(layer instanceof Layer)) {
-			latlng = layer;
-			layer = this;
-		}
-
-		if (layer instanceof FeatureGroup) {
-			for (var id in this._layers) {
-				layer = this._layers[id];
-				break;
-			}
-		}
-
-		if (!latlng) {
-			latlng = layer.getCenter ? layer.getCenter() : layer.getLatLng();
-		}
-
 		if (this._popup && this._map) {
-			// set popup source to this layer
-			this._popup._source = layer;
-
-			// update the popup (content, layout, ect...)
-			this._popup.update();
+			latlng = this._popup._prepareOpen(this, layer, latlng);
 
 			// open the popup on the map
 			this._map.openPopup(this._popup, latlng);
@@ -10925,29 +11138,8 @@ Layer.include({
 	// @method openTooltip(latlng?: LatLng): this
 	// Opens the bound tooltip at the specified `latlng` or at the default tooltip anchor if no `latlng` is passed.
 	openTooltip: function (layer, latlng) {
-		if (!(layer instanceof Layer)) {
-			latlng = layer;
-			layer = this;
-		}
-
-		if (layer instanceof FeatureGroup) {
-			for (var id in this._layers) {
-				layer = this._layers[id];
-				break;
-			}
-		}
-
-		if (!latlng) {
-			latlng = layer.getCenter ? layer.getCenter() : layer.getLatLng();
-		}
-
 		if (this._tooltip && this._map) {
-
-			// set tooltip source to this layer
-			this._tooltip._source = layer;
-
-			// update the tooltip (content, layout, ect...)
-			this._tooltip.update();
+			latlng = this._tooltip._prepareOpen(this, layer, latlng);
 
 			// open the tooltip on the map
 			this._map.openTooltip(this._tooltip, latlng);
@@ -11058,8 +11250,9 @@ var DivIcon = Icon.extend({
 		// iconAnchor: (Point),
 		// popupAnchor: (Point),
 
-		// @option html: String = ''
-		// Custom HTML code to put inside the div element, empty by default.
+		// @option html: String|HTMLElement = ''
+		// Custom HTML code to put inside the div element, empty by default. Alternatively,
+		// an instance of `HTMLElement`.
 		html: false,
 
 		// @option bgPos: Point = [0, 0]
@@ -11073,7 +11266,12 @@ var DivIcon = Icon.extend({
 		var div = (oldIcon && oldIcon.tagName === 'DIV') ? oldIcon : document.createElement('div'),
 		    options = this.options;
 
-		div.innerHTML = options.html !== false ? options.html : '';
+		if (options.html instanceof Element) {
+			empty(div);
+			div.appendChild(options.html);
+		} else {
+			div.innerHTML = options.html !== false ? options.html : '';
+		}
 
 		if (options.bgPos) {
 			var bgPos = toPoint(options.bgPos);
@@ -14463,6 +14661,8 @@ exports.ImageOverlay = ImageOverlay;
 exports.imageOverlay = imageOverlay;
 exports.VideoOverlay = VideoOverlay;
 exports.videoOverlay = videoOverlay;
+exports.SVGOverlay = SVGOverlay;
+exports.svgOverlay = svgOverlay;
 exports.DivOverlay = DivOverlay;
 exports.Popup = Popup;
 exports.popup = popup;
@@ -32251,23 +32451,105 @@ var render = function() {
           )
         }),
         0
-      ),
-      _vm._v(" "),
-      _c(
-        "div",
-        { staticClass: "all_dates" },
-        [
-          _vm._l(_vm.all_dates, function(date) {
-            return _c("li", { key: date, attrs: { value: date } }, [
-              _vm._v(_vm._s(date))
-            ])
-          }),
-          _vm._v(" "),
-          _c("li")
-        ],
-        2
       )
     ])
+  ])
+}
+var staticRenderFns = []
+render._withStripped = true
+
+
+
+/***/ }),
+
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./src/components/map.vue?vue&type=template&id=6587b508&":
+/*!*********************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./src/components/map.vue?vue&type=template&id=6587b508& ***!
+  \*********************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("div", [
+    _c("div", { attrs: { id: _vm.map_id } }),
+    _vm._v(" "),
+    _c(
+      "div",
+      { staticClass: "indicators rounded", attrs: { id: "indicators-app" } },
+      [
+        _c("div", { staticClass: "active_icon class=temperature" }, [
+          _c(
+            "span",
+            {
+              staticClass: "temperature",
+              on: {
+                click: function($event) {
+                  return _vm.show_lister($event, 0)
+                }
+              }
+            },
+            [
+              _vm._v(
+                "\n        Климатические\n        показатели 3-ч часовые\n      "
+              )
+            ]
+          )
+        ]),
+        _vm._v(" "),
+        _c("lister", {
+          directives: [
+            {
+              name: "show",
+              rawName: "v-show",
+              value: _vm.active_group === "temperature",
+              expression: "active_group==='temperature'"
+            }
+          ],
+          attrs: { index_group: 0, layer_wms: _vm.main_layer }
+        }),
+        _vm._v(" "),
+        _c("div", { staticClass: "temperature" }, [
+          _c(
+            "span",
+            {
+              staticClass: "some_days",
+              on: {
+                click: function($event) {
+                  return _vm.show_lister($event, 1)
+                }
+              }
+            },
+            [_vm._v("Какие то дни")]
+          )
+        ]),
+        _vm._v(" "),
+        _c("lister", {
+          directives: [
+            {
+              name: "show",
+              rawName: "v-show",
+              value: _vm.active_group === "some_days",
+              expression: "active_group==='some_days'"
+            }
+          ],
+          attrs: { index_group: 1, layer_wms: _vm.main_layer }
+        }),
+        _vm._v(" "),
+        _c("div", [
+          _vm._v(
+            "Текущий показатель " + _vm._s(_vm.main_layer.wmsParams.layers)
+          )
+        ])
+      ],
+      1
+    )
   ])
 }
 var staticRenderFns = []
@@ -32400,6 +32682,27 @@ if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
 var add = __webpack_require__(/*! ../../node_modules/vue-style-loader/lib/addStylesClient.js */ "./node_modules/vue-style-loader/lib/addStylesClient.js").default
 var update = add("b646f3de", content, false, {});
+// Hot Module Replacement
+if(false) {}
+
+/***/ }),
+
+/***/ "./node_modules/vue-style-loader/index.js!./node_modules/css-loader/dist/cjs.js!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/vue-loader/lib/index.js?!./src/components/map.vue?vue&type=style&index=0&lang=scss&":
+/*!***************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-style-loader!./node_modules/css-loader/dist/cjs.js!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/vue-loader/lib??vue-loader-options!./src/components/map.vue?vue&type=style&index=0&lang=scss& ***!
+  \***************************************************************************************************************************************************************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+// style-loader: Adds some css to the DOM by adding a <style> tag
+
+// load the styles
+var content = __webpack_require__(/*! !../../node_modules/css-loader/dist/cjs.js!../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../node_modules/vue-loader/lib??vue-loader-options!./map.vue?vue&type=style&index=0&lang=scss& */ "./node_modules/css-loader/dist/cjs.js!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/vue-loader/lib/index.js?!./src/components/map.vue?vue&type=style&index=0&lang=scss&");
+if(typeof content === 'string') content = [[module.i, content, '']];
+if(content.locals) module.exports = content.locals;
+// add the styles to the DOM
+var add = __webpack_require__(/*! ../../node_modules/vue-style-loader/lib/addStylesClient.js */ "./node_modules/vue-style-loader/lib/addStylesClient.js").default
+var update = add("46bd44ec", content, false, {});
 // Hot Module Replacement
 if(false) {}
 
@@ -44807,6 +45110,93 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./src/components/map.vue":
+/*!********************************!*\
+  !*** ./src/components/map.vue ***!
+  \********************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _map_vue_vue_type_template_id_6587b508___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./map.vue?vue&type=template&id=6587b508& */ "./src/components/map.vue?vue&type=template&id=6587b508&");
+/* harmony import */ var _map_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./map.vue?vue&type=script&lang=js& */ "./src/components/map.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _map_vue_vue_type_style_index_0_lang_scss___WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./map.vue?vue&type=style&index=0&lang=scss& */ "./src/components/map.vue?vue&type=style&index=0&lang=scss&");
+/* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__["default"])(
+  _map_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _map_vue_vue_type_template_id_6587b508___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _map_vue_vue_type_template_id_6587b508___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "src/components/map.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./src/components/map.vue?vue&type=script&lang=js&":
+/*!*********************************************************!*\
+  !*** ./src/components/map.vue?vue&type=script&lang=js& ***!
+  \*********************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_node_modules_vue_loader_lib_index_js_vue_loader_options_map_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../node_modules/babel-loader/lib!../../node_modules/vue-loader/lib??vue-loader-options!./map.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js!./node_modules/vue-loader/lib/index.js?!./src/components/map.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_node_modules_vue_loader_lib_index_js_vue_loader_options_map_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./src/components/map.vue?vue&type=style&index=0&lang=scss&":
+/*!******************************************************************!*\
+  !*** ./src/components/map.vue?vue&type=style&index=0&lang=scss& ***!
+  \******************************************************************/
+/*! no static exports found */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_style_loader_index_js_node_modules_css_loader_dist_cjs_js_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_vue_loader_lib_index_js_vue_loader_options_map_vue_vue_type_style_index_0_lang_scss___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../node_modules/vue-style-loader!../../node_modules/css-loader/dist/cjs.js!../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../node_modules/vue-loader/lib??vue-loader-options!./map.vue?vue&type=style&index=0&lang=scss& */ "./node_modules/vue-style-loader/index.js!./node_modules/css-loader/dist/cjs.js!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/vue-loader/lib/index.js?!./src/components/map.vue?vue&type=style&index=0&lang=scss&");
+/* harmony import */ var _node_modules_vue_style_loader_index_js_node_modules_css_loader_dist_cjs_js_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_vue_loader_lib_index_js_vue_loader_options_map_vue_vue_type_style_index_0_lang_scss___WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_vue_style_loader_index_js_node_modules_css_loader_dist_cjs_js_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_vue_loader_lib_index_js_vue_loader_options_map_vue_vue_type_style_index_0_lang_scss___WEBPACK_IMPORTED_MODULE_0__);
+/* harmony reexport (unknown) */ for(var __WEBPACK_IMPORT_KEY__ in _node_modules_vue_style_loader_index_js_node_modules_css_loader_dist_cjs_js_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_vue_loader_lib_index_js_vue_loader_options_map_vue_vue_type_style_index_0_lang_scss___WEBPACK_IMPORTED_MODULE_0__) if(__WEBPACK_IMPORT_KEY__ !== 'default') (function(key) { __webpack_require__.d(__webpack_exports__, key, function() { return _node_modules_vue_style_loader_index_js_node_modules_css_loader_dist_cjs_js_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_vue_loader_lib_index_js_vue_loader_options_map_vue_vue_type_style_index_0_lang_scss___WEBPACK_IMPORTED_MODULE_0__[key]; }) }(__WEBPACK_IMPORT_KEY__));
+ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_vue_style_loader_index_js_node_modules_css_loader_dist_cjs_js_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_vue_loader_lib_index_js_vue_loader_options_map_vue_vue_type_style_index_0_lang_scss___WEBPACK_IMPORTED_MODULE_0___default.a); 
+
+/***/ }),
+
+/***/ "./src/components/map.vue?vue&type=template&id=6587b508&":
+/*!***************************************************************!*\
+  !*** ./src/components/map.vue?vue&type=template&id=6587b508& ***!
+  \***************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_map_vue_vue_type_template_id_6587b508___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../node_modules/vue-loader/lib??vue-loader-options!./map.vue?vue&type=template&id=6587b508& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./src/components/map.vue?vue&type=template&id=6587b508&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_map_vue_vue_type_template_id_6587b508___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_map_vue_vue_type_template_id_6587b508___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
+
+/***/ }),
+
 /***/ "./src/index.js":
 /*!**********************!*\
   !*** ./src/index.js ***!
@@ -44816,74 +45206,49 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var leaflet__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! leaflet */ "./node_modules/leaflet/dist/leaflet-src.js");
-/* harmony import */ var leaflet__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(leaflet__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm.js");
-/* harmony import */ var _components_lister_vue__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./components/lister.vue */ "./src/components/lister.vue");
+/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm.js");
+/* harmony import */ var _components_map_vue__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./components/map.vue */ "./src/components/map.vue");
 
 
 
+var app_1, app_2, app_3;
 
-document.addEventListener("DOMContentLoaded", function (event) {
-    //load_map();
-    init_main_app();
-    init_main_app2();
-});
+var add_func = function add_component(event) {
+    var w1 = document.getElementById("window1");
+    w1.style.width = "50%";
+    var w2 = document.getElementById("window2");
+    w2.style.width = "50%";
+    w2.style.display = "block";
 
-function init_main_app() {
-
-    //import * from "./components/
-
-    var first_layer = "ucc:Day_with_snow_1951_1980_with_h_focal.tif";
-    var layer_wms = leaflet__WEBPACK_IMPORTED_MODULE_0__["tileLayer"].wms("http://localhost:8080/geoserver/ucc/ows?", {
-        layers: first_layer,
-        format: "image/png",
-        transparent: true,
-        opacity: 0.5
-    }, true);
-    var v = new vue__WEBPACK_IMPORTED_MODULE_1__["default"]({
-        el: '#main_app',
+    app_2 = new vue__WEBPACK_IMPORTED_MODULE_0__["default"]({
+        el: "#app2",
         data: {
-            init_map: first_layer,
-            main_layer: layer_wms,
-            active_group: "temperature"
+            map_id_num: "map_2"
         },
-        methods: {
-            load_map: function load_map() {
-
-                this.init_map = new leaflet__WEBPACK_IMPORTED_MODULE_0__["Map"]("map", {
-                    minZoom: 4,
-                    maxZoom: 6
-                });
-
-                this.init_map.setView(new leaflet__WEBPACK_IMPORTED_MODULE_0__["LatLng"](59, 59), 4);
-
-                var layer = new leaflet__WEBPACK_IMPORTED_MODULE_0__["TileLayer"]('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: "attribution test" });
-
-                //layer.addTo(this.init_map);
-                layer_wms.addTo(this.init_map);
-            },
-            show_lister: function show_lister(event, index) {
-                //console.log(event.target.className);
-                this.active_group = event.target.className;
-                this.$children[index].update_layer();
-                for (var _index = 0; _index < this.$children.length; _index++) {
-                    var element = this.$children[_index];
-                    element.brake_animation();
-                }
-                //this.$children[index].brake_animation();
-            }
-        },
-        mounted: function mounted() {
-            this.load_map();
-        },
-
         components: {
-            lister: _components_lister_vue__WEBPACK_IMPORTED_MODULE_2__["default"]
+            map_component: _components_map_vue__WEBPACK_IMPORTED_MODULE_1__["default"]
         },
-        template: "\n        <div>\n            <header\n                class=\"main_header offset-sm-3 offset-md-3 col-xl-6 col-sm-6 col-12 col-md-6 col-lg-6 rounded\"\n                >\u0410\u0442\u043B\u0430\u0441\u043D\u0430\u044F \u0438\u043D\u0444\u043E\u0440\u043C\u0430\u0446\u0438\u043E\u043D\u043D\u0430\u044F \u0441\u0438\u0441\u0442\u0435\u043C\u0430 \"\u0418\u0437\u043C\u0435\u043D\u0435\u043D\u0438\u0435 \u043A\u043B\u0438\u043C\u0430\u0442\u0430 \u0423\u0440\u0430\u043B\u0430\"\n            </header>\n            <div id=\"indicators-app\" class=\"indicators rounded\">\n                <div class=\"active_icon class=temperature\">\n                    <span class=\"temperature\" @click=\"show_lister($event,0)\">\n                        \u041A\u043B\u0438\u043C\u0430\u0442\u0438\u0447\u0435\u0441\u043A\u0438\u0435\n                        \u043F\u043E\u043A\u0430\u0437\u0430\u0442\u0435\u043B\u0438 3-\u0447 \u0447\u0430\u0441\u043E\u0432\u044B\u0435\n                        \n                    </span>\n                </div>\n                    <lister v-show=\"active_group==='temperature'\" ref=\"group\" :index_group=\"0\" :layer_wms=\"main_layer\" />\n                <div  class=\"temperature\" >\n                    <span class=\"some_days\" @click=\"show_lister($event,1)\">\n                        \u041A\u0430\u043A\u0438\u0435 \u0442\u043E \u0434\u043D\u0438\n                    </span>\n                </div>\n                    <lister v-show=\"active_group==='some_days'\" :index_group=\"1\" :layer_wms=\"main_layer\" />\n                <div>\n                    \u0422\u0435\u043A\u0443\u0449\u0438\u0439 \u043F\u043E\u043A\u0430\u0437\u0430\u0442\u0435\u043B\u044C {{main_layer.wmsParams.layers}}\n                </div>\n            </div>\n\n        </div>\n        "
+        template: '<map_component :map_id="map_id_num"/>'
     });
-}
+    app_1.$children[0].update_map_size();
+    app_2.$children[0].update_map_size();
+};
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    document.getElementById("button_add_window").onclick = add_func;
+
+    app_1 = new vue__WEBPACK_IMPORTED_MODULE_0__["default"]({
+        el: "#app1",
+        data: {
+            map_id_num: "map_1"
+        },
+        components: {
+            map_component: _components_map_vue__WEBPACK_IMPORTED_MODULE_1__["default"]
+        },
+        template: '<map_component :map_id="map_id_num"/>'
+    });
+});
 
 /***/ }),
 

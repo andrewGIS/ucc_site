@@ -7,7 +7,6 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>index</title>
 	<link href="css/bootstrap-4.0.0.css" rel="stylesheet" type="text/css">
-
 	<link href="../node_modules/leaflet/dist/leaflet.css" rel="stylesheet" type="text/css">
 	<link href="css/main.css" rel="stylesheet" type="text/css">
 	<!-- <script>src = "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.4.0/leaflet.js"</script> -->
@@ -20,14 +19,27 @@
 </head>
 
 <body>
-	<div id="map"></div>
-	<div id="main_app">
-	</div>
-	<div id="map_2"></div>
-	<div id="main_app2">
-	</div>
+	<header class="main_header offset-sm-3 offset-md-3 col-xl-6 col-sm-6 col-12 col-md-6 col-lg-6 rounded">Атласная
+		информационная система "Изменение климата Урала"
+	</header>
 
+	<div class="data_container">
+		<div id=window1 class="window">
+			<div id="app1"></div>
+		</div>
 
+		<div id="window2" class="window" style="display:none">
+			<div id="app2"></div>
+		</div>
+		<!-- <div id="window3" class="window">
+			<div id="app3"></div>
+		</div>  -->
+
+	</div>
+	
+	<div class="control_panel">Управление
+		<button id="button_add_window">Добавить окно</button>
+	</div>
 </body>
 
 </html>

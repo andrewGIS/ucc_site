@@ -22,10 +22,10 @@
       <select v-on:change="update_layer()" name="select_month" v-model="selected_month">
         <option v-for="month in aviable_months" :value="month.key" :key="month.key">{{month.alias}}</option>
       </select>
-      <div class="all_dates">
+      <!-- <div class="all_dates">
         <li v-for="date in all_dates" :value="date" :key="date">{{date}}</li>
         <li></li>
-      </div>
+      </div> -->
     </div>
   </div>
 </template>
@@ -35,7 +35,7 @@
 import Vue from "vue";
 import { loaded_data } from "../indicators_meta_v2.js";
 import * as _ from "lodash";
-import * as L from "leaflet";
+import  L from "leaflet";
 import { setTimeout, clearTimeout } from "timers";
 
 // interface month {
@@ -44,6 +44,7 @@ import { setTimeout, clearTimeout } from "timers";
 // }
 
 export default {
+  name:"lister",
   props: {
     index_group: Number,
     layer_wms: {
