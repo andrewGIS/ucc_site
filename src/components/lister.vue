@@ -2,30 +2,25 @@
 <template >
   <div>
     <div class="container">
-      <select
-        v-on:change="change_indicator"
-        name="select_subindicator"
-        v-model="selected_indicator"
-      >
+      <select  @change="update_layer()" name="select_indicator" v-model="selected_indicator" :disabled="is_animation">
         <option
-          v-for="indicator in load_aviable_indicator_list()"
+          v-for="indicator in aviable_indicators"
           :value="indicator.name"
           :key="indicator.name"
         >{{indicator.alias}}</option>
       </select>
-      <button @click="start_anim_periods()">Play year</button>
-      <select v-on:change="update_layer()" name="select_period" v-model="selected_period">
+
+      <select @change="update_layer()" name="select_period" v-model="selected_period" :disabled="is_animation">
         <option v-for="year in aviable_periods" :value="year" :key="year">{{year.replace("_","-")}}</option>
       </select>
-      <button @click="start_anim_monts">Play month</button>
-      <button @click="brake_animation">Brake animation</button>
-      <select v-on:change="update_layer()" name="select_month" v-model="selected_month">
+
+      <select  @change="update_layer()" name="select_month" v-model="selected_month" :disabled="is_animation">
         <option v-for="month in aviable_months" :value="month.key" :key="month.key">{{month.alias}}</option>
       </select>
-      <!-- <div class="all_dates">
-        <li v-for="date in all_dates" :value="date" :key="date">{{date}}</li>
-        <li></li>
-      </div> -->
+
+      <button @click="start_anim_periods">Play year</button>
+      <button @click="brake_animation">Brake animation</button>
+      <!-- <button @click="update_layer()">Обновить слой</button> -->
     </div>
   </div>
 </template>
@@ -33,58 +28,166 @@
 
 <script >
 import Vue from "vue";
-import { loaded_data } from "../indicators_meta_v2.js";
+import all_metadata from "../indicators_meta_v2.js";
 import * as _ from "lodash";
-import  L from "leaflet";
 import { setTimeout, clearTimeout } from "timers";
 
-// interface month {
-//   key: string;
-//   alias: string;
-// }
-
 export default {
-  name:"lister",
+  name: "Lister",
   props: {
-    index_group: Number,
-    layer_wms: {
+    name_group: {
+      type: String, // name group to filtering data  (from indicators meta v2)
       required: true
+    },
+    layer_wms: {
+      required: true // layer wms for animation
     }
   },
   data() {
     return {
-      loaded_rasters: loaded_data,
-      selected_indicator: " ",
-      selected_period: " ",
-      selected_month: "apr",
-      selected_postfix: " ",
-      selected_style: " ",
-      aviable_months: [{ key: "jan", alias: "Январь" }],
-      aviable_periods: [" "],
-      brake_animation_flag: false,
+      // filter and store data for defined group (in prop)
+      meta_data_group: "",
+      // store selected indicator name (Mean pressure for example)
+      selected_indicator: "",
+      // store selected period value (1951_1958 for example)
+      selected_period: "",
+      // store selected month value (Jan for example)
+      // keys defined in this.aviable_month
+      selected_month: "",
+      // list of aviable indicator in group
+      // stores as list of objects [{"name":"Mean_pressure","alias":"Среднее давление"}]
+      aviable_indicators: [],
+      // is animation in action
+      is_animation: false,
+      // variable for animation
       timer: ""
     };
   },
   methods: {
+    start_anim_periods() {
+      /**
+       * Animate period for selected indicator
+       * Time control in duration variable
+       */
+      var index = _.indexOf(this.aviable_periods, this.selected_period) + 1;
+
+      var duration = 2000;
+
+      this.is_animation = true;
+      this.layer_wms.redraw();
+      this.layer_wms.on("load", () => {
+        if (index < this.aviable_periods.length && this.is_animation) {
+          this.timer = setTimeout(() => {
+            this.selected_period = this.aviable_periods[index];
+            this.update_layer();
+            index += 1;
+            this.layer_wms.redraw();
+          }, duration);
+        } else {
+          this.brake_animation();
+          return;
+        }
+      });
+    },
     brake_animation() {
-      // clearTimeout(this.timer);
-      //this.layer_wms.off();
-      this.brake_animation_flag = true;
+      /**
+       * Brake animation
+       */
+      this.is_animation = false;
+      this.layer_wms.off();
       clearTimeout(this.timer);
     },
-    sleep(ms) {
-      return new Promise(resolve => setTimeout(resolve, ms));
+    update_layer() {
+      /**
+       * Temp function for update layer
+       * Need to find where is shoul be placed
+       * for dynamic update
+       */
+      this.$emit("layer_update", {
+        layers: this.layer_url,
+        styles: this.style
+      });
+      this.$emit("update_desc", this.description);
+      this.$emit("update_legend", this.legend);
+    }
+  },
+  computed: {
+    postfix() {
+      /**
+       * Return postfix of selected element
+       * It is end of file and in meta data it is setted
+       */
+      return _.find(this.meta_data_group.indicators, {
+        name: this.selected_indicator
+      }).postfix_in_file;
     },
-    load_aviable_months() {
-      let aviable_months = _.filter(
-        this.loaded_rasters.groups[this.index_group].indicators,
-        obj => {
-          return obj.name === this.selected_indicator;
-        }
-      )[0];
+    style() {
+      /**
+       * Return style name for selected element
+       */
+      return _.find(this.meta_data_group.indicators, {
+        name: this.selected_indicator
+      }).style;
+    },
+    description() {
+      /**
+       * Return description of selected element
+       */
+      return _.find(this.meta_data_group.indicators, {
+        name: this.selected_indicator
+      }).desc;
+    },
+    legend() {
+      /**
+       * Computed legend URL for selected layer
+       */
+      return (
+        `http://localhost:8080/geoserver/wms` +
+        `?REQUEST=GetLegendGraphic&VERSION=1.0.0&FORMAT=image/` +
+        `png&WIDTH=10&HEIGHT=10&LAYER=${this.layer_url}&style=` +
+        `${this.style + "_legend"}&legend_options=layout:vetrical`
+      );
+    },
+    layer_url() {
+      /**
+       * Computed URL of selected layer
+       * ucc - store on Geoserver !!!MAY CHANGE!!
+       */
+      let url_string;
+      if (this.selected_month == "None") {
+        url_string =
+          `ucc:${this.selected_indicator}` +
+          `_${this.selected_period}` +
+          `_${this.postfix}`;
+      } else {
+        url_string =
+          `ucc:${this.selected_indicator}` +
+          `_${this.selected_period}` +
+          `_${this.selected_month}` +
+          `_${this.postfix}`;
+      }
 
-      this.selected_month = aviable_months.months[0];
-      this.aviable_months = _.map(aviable_months.months, month => {
+      return url_string;
+    },
+    aviable_months() {
+      /**
+       * Return aviable months for selected indicator
+       * from metadata
+       * Reading from pre-filtered meta_data_group property
+       * return list of objects [{month_key:month_alias}]
+       * sample output [{month_key:month_alias}]
+       */
+
+      // extacting months list from group data
+      let _months = _.find(this.meta_data_group.indicators, {
+        name: this.selected_indicator
+      }).months;
+
+      // set first month as selected in droplist
+      this.selected_month = _months[0];
+
+      // trasnform list to object {month_key:month_alias}
+      _months = _.map(_months, month => {
         switch (month) {
           case "year":
             return { key: "year", alias: "Год" };
@@ -100,252 +203,75 @@ export default {
             return { key: "None", alias: "Нет данных" };
         }
       });
-      return aviable_months.months;
+      // return object list for render in select month select tag
+      return _months;
     },
-    change_indicator(event) {
-      this.selected_indicator = event.target.value;
-      //console.log("change_indicator => " + this.selected_indicator);
-      this.update_postfix_for_group();
-      this.update_style_for_indicator();
-      this.load_aviable_months();
-      this.load_aviable_periods();
-      this.update_layer();
-    },
-    update_layer() {
-      //console.log(`ucc:${this.selected_indicator}_${this.current_year}_${this.selected_month}_${this.selected_postfix}`)
-      //console.log(this.selected_month)
-      //console.log(this.selected_month)
-      if (this.selected_month == "None") {
-        // console.log(
-        //   `ucc:${this.selected_indicator}_${this.selected_period}_${
-        //     this.selected_postfix
-        //   }`
-        // );
-        // this.layer_wms.setParams(
-        //   {
-        //     layers: `ucc:${this.selected_indicator}_${this.selected_period}_${
-        //       this.selected_postfix
-        //     }`,
-        //     styles: this.selected_style
-        //   },
-        //   false
-        // );
-        this.layer_wms.setParams({
-          layers: `ucc:${this.selected_indicator}_${this.selected_period}_${
-            this.selected_postfix
-          }`,
-          styles: this.selected_style
-        });
-      } else {
-        // console.log(
-        //   `ucc:${this.selected_indicator}_${this.selected_period}_${
-        //     this.selected_month
-        //   }_${this.selected_postfix}`
-        // );
-        this.layer_wms.setParams({
-          layers: `ucc:${this.selected_indicator}_${this.selected_period}_${
-            this.selected_month
-          }_${this.selected_postfix}`,
-          styles: this.selected_style
-        });
-      }
-    },
-    update_postfix_for_group() {
+    aviable_periods() {
       /**
-       * Update postfix for adding to file
-       * Sample postfix is with_h_focal in Day_with_snow_1951_1980_with_h_focal.tif
-       * It may change in different group
+       * Return aviable periods for selected indicator (1951-1960 for example)
+       * from metadata
+       * Reading from pre-filtered meta_data_group property
+       * return list of objects [periods]
        */
-      this.selected_postfix = _.filter(
-        this.loaded_rasters.groups[this.index_group].indicators,
-        obj => {
-          return obj.name === this.selected_indicator;
-        }
-      )[0].postfix_in_file;
 
-      //console.log("change_postfix => " + this.selected_postfix);
-    },
-    update_style_for_indicator() {
-      this.selected_style = _.filter(
-        this.loaded_rasters.groups[this.index_group].indicators,
-        obj => {
-          return obj.name === this.selected_indicator;
-        }
-      )[0].style;
-      //console.log("change_style => " + this.selected_style);
-    },
-    load_aviable_periods() {
-      let aviable_periods = _.filter(
-        this.loaded_rasters.groups[this.index_group].indicators,
-        obj => {
-          return obj.name === this.selected_indicator;
-        }
-      )[0];
+      // extacting months list from group data
+      let _periods = _.find(this.meta_data_group.indicators, {
+        name: this.selected_indicator
+      }).periods;
 
-      // get first aviable period and set its as default in dropdown list
-      this.selected_period = aviable_periods.periods[0];
-      this.aviable_periods = aviable_periods.periods;
-      return aviable_periods.periods;
-    },
-    load_aviable_indicator_list() {
-      return _.filter(
-        this.loaded_rasters.groups[this.index_group].indicators,
-        function(obj) {
-          return obj.name;
-        }
-      );
-    },
-    start_anim_periods() {
-      // var stop = function() {
-      //   if (animationId !== null) {
-      //     window.clearInterval(animationId);
-      //     animationId = null;
-      //   }
-      // };
-    },
-    start_anim_monts() {
-      var index =
-        _.findIndex(this.aviable_months, {
-          key: this.selected_month
-        }) + 1;
-      var inst = this;
-      var duration = 2000;
+      // set first period as selected
+      this.selected_period = _periods[0];
 
-      this.layer_wms.redraw();
-      this.layer_wms.on("load", function() {
-        //     //console.log(inst.selected_month);
-        if (index < inst.aviable_months.length && !this.brake_animation_flag) {
-          inst.timer = setTimeout(function() {
-            if (!inst.brake_animation_flag) {
-              inst.selected_month = inst.aviable_months[index].key;
-              inst.update_layer();
-              index += 1;
-              console.log("loaded");
-              inst.layer_wms.redraw();
-            } else {
-              inst.brake_animation_flag = false;
-              //inst.brake_animation();
-              return;
-            }
-          }, duration);
-        }
-      });
-      //
-      //index = 0;
-      //this.layer_wms.off();
-      // var stop = function() {
-      //   if (animationId !== null) {
-      //     window.clearInterval(animationId);
-      //     animationId = null;
-      //   }
-      // };
-      // var set_month = function() {
-      //   if (index < inst.aviable_periods.length - 1) {
-      //     inst.selected_month = inst.aviable_periods[index].key;
-      //     inst.update_layer();
-      //     index += 1;
-      //   } else {
-      //     stop();
-      //   }
-      // };
-
-      // var play = function() {
-      //   stop();
-      //   animationId = window.setInterval(set_month, 2000);
-      // };
-      // play();
-
-      // while(index!== this.aviable_months.length -1){
-      //   console.log("loaded")
-
-      //   var flag = true
-      //   while (flag){
-      //     index +=1
-      //     this.selected_month = this.aviable_months[index+1]
-      //     this.update_layer();
-      //     console.log( this.layer_wms.isLoading());
-      //     this.layer_wms.redraw();
-      //     console.log("loading")
-      //   }
-      // }
-
-      // for (const mon of inst.aviable_months) {
-      //   this.selected_month = mon.key
-      //   this.update_layer();
-      //   window.setInterval(this.update_layer(),2000)
-      // }
-      //     //const element = array[index];
-      //     this.layer_wms.on("load", function() {
-      //       //console.log(inst.selected_month);
-      //       //console.log("loaded");
-      //       inst.update_layer();
-      //       //index = index + 1;
-      //       console.log(mon.key);
-      //       //inst.update_layer();
-      //     });
-      //     this.selected_month = mon.key;
-      //     this.layer_wms.redraw();
-      //     //setTimeout("",2000)
-      //   }
-
-      //console.log(index);
-
-      //this.selected_period = this.aviable_periods[index];
-      //this.update_params();
-      //}
+      // return list for render in select period select tag
+      return _periods;
     }
   },
-  computed: {
-    all_dates() {
-      var full_date = [];
-      for (const period of this.aviable_periods) {
-        for (const month of this.aviable_months) {
-          full_date.push(`${period.replace("_",'-')}  ${month.alias}`);
-        }
-      }
-      return full_date;
-    }
-  },
-  mounted: function() {
-    this.selected_indicator = _.map(
-      this.loaded_rasters.groups[this.index_group].indicators,
-      function(obj) {
-        return obj.name;
-      }
-    )[0];
-    this.update_postfix_for_group();
-    this.update_style_for_indicator();
-    this.load_aviable_periods();
-    this.load_aviable_months();
-    // console.log(
-    //   `ucc:${this.selected_indicator}_${this.selected_period}_${
-    //     this.selected_month
-    //   }_${this.selected_postfix}`
-    // );
+  created() {
+    /**
+     * Update meta data for group
+     * Load aviable indicators list and
+     * set first element
+     */
+    this.meta_data_group = _.find(all_metadata.groups, {
+      name: this.name_group
+    });
+    let _indicators = _.map(this.meta_data_group.indicators, o =>
+      _.pick(o, ["name", "alias"])
+    );
+    // save list in variable
+    this.aviable_indicators = _indicators;
+    // set first indicator as selected
+    this.selected_indicator = _indicators[0].name;
   }
 };
+
+// add functions
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
 </script>
 
 <style lang="scss" scoped>
 .container {
-  width:100%;
+  width: 100%;
   display: flex;
   flex-direction: column;
   font-size: 84%;
   z-index: 3;
   white-space: nowrap;
+  border: 2px solid black;
 }
-.all_dates{
+.all_dates {
   width: 300 px;
   position: relative;
-  border:2px solid black;
+  border: 2px solid black;
   display: flex;
   flex-direction: row;
-  bottom:10%;
+  bottom: 10%;
   justify-content: space-between;
-  li{
-    padding:10px;
-    margin:10px;
+  li {
+    padding: 10px;
+    margin: 10px;
     border: 2px solid red;
   }
 }

@@ -7,7 +7,8 @@
   "dependencies": {
     "bootstrap": "^4.3.1",
     "leaflet": "^1.5.1",
-    "popper": "^1.0.1"
+    "popper": "^1.0.1",
+    "webpack-dev-server": "^3.7.2"
   },
   "devDependencies": {
     "@types/lodash": "^4.14.123",
@@ -35,7 +36,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "webpack --progress --hide-modules",
     "watch": "webpack --watch",
-    "dev": "webpack --mode development"
+    "dev": "webpack --mode development",
+    "start": "webpack-dev-server"
   },
   "repository": {
     "type": "git",

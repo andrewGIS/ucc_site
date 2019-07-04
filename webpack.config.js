@@ -8,13 +8,14 @@ const VueLoaderPlugin = require('vue-loader/lib/plugin');
 module.exports = {
   //mode:"development",
   //watch: NODE_ENV == "developmnet",
+  //context: path.resolve(__dirname, './src'),
   watch: true,
   watchOptions: {
     aggregateTimeout: 100
   },
   // если есть переменная то создаем сорс мэпы, если нет то вообще их не создаем
   //devtool: NODE_ENV == "developmnet" ? "eval" : null,
-  devtool:"source-map",
+  devtool:"inline-source-map",
   //либо "cheap-inline-module-source-map" на продакшн можно source-map
   entry: './src/index.js',
   output: {
@@ -71,6 +72,9 @@ module.exports = {
   plugins: [
     // убедитесь что подключили плагин!
     new VueLoaderPlugin()
-  ]
+  ],
+  devServer:{
+    port: 9000
+  }
   
 }
