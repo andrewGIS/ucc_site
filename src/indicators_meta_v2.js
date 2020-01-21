@@ -21,7 +21,7 @@ export const all_metadata = {
                     months:['year','jan','apr', 'jul', 'oct'],
                     style:"ucc:mean_wind",
                     postfix_in_file:"with_h_focal.tif",
-                    desc: "Test desc of mean wind"
+                    desc: "Средняя максимальная скорость ветра, подсчитанное по скользящим периодам в разрезе месяцев"
                 },
                 {
                     name:"Max_prec_df",

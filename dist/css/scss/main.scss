@@ -1,7 +1,13 @@
+// replace import only necessary modules
+@import "../../../node_modules/bootstrap/scss/bootstrap.scss";
+@import "../../../node_modules/leaflet/dist/leaflet.css";
 @import "header";
-@import "slider";
-@import "elements";
+@import "footer";
 @import "base";
+// vue component styles
+@import "lister_component";
+@import "map_component";
+
 
 
 

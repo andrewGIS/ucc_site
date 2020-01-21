@@ -1,8 +1,13 @@
 <!-- src/components/lister.vue -->
 <template >
   <div>
-    <div class="container">
-      <select  @change="update_layer()" name="select_indicator" v-model="selected_indicator" :disabled="is_animation">
+    <div class="select_container">
+      <select
+        class="form-control"
+        @change="update_indicator"
+        v-model="selected_indicator"
+        :disabled="is_animation"
+      >
         <option
           v-for="indicator in aviable_indicators"
           :value="indicator.name"
@@ -10,17 +15,31 @@
         >{{indicator.alias}}</option>
       </select>
 
-      <select @change="update_layer()" name="select_period" v-model="selected_period" :disabled="is_animation">
-        <option v-for="year in aviable_periods" :value="year" :key="year">{{year.replace("_","-")}}</option>
+      <select
+        class="form-control"
+        @change="update_layer"
+        v-model="selected_period"
+        :disabled="is_animation"
+      >
+        <option
+          v-for="year in aviable_periods"
+          :value="year"
+          :key="year"
+        >{{year.replace("_","-")}}</option>
       </select>
 
-      <select  @change="update_layer()" name="select_month" v-model="selected_month" :disabled="is_animation">
+      <select
+        class="form-control"
+        @change="update_layer"
+        v-model="selected_month"
+        :disabled="is_animation"
+      >
         <option v-for="month in aviable_months" :value="month.key" :key="month.key">{{month.alias}}</option>
       </select>
 
-      <button @click="start_anim_periods">Play year</button>
-      <button @click="brake_animation">Brake animation</button>
-      <!-- <button @click="update_layer()">Обновить слой</button> -->
+      <!-- <button @click="start_anim_periods" class="play anim_button btn btn-light btn-sm">Play</button> -->
+      <!-- <button @click="brake_animation" class="stop anim_button btn btn-light btn-sm">Stop</button> -->
+       <!-- <button @click="update_layer()">Обновить слой</button>  -->
     </div>
   </div>
 </template>
@@ -41,6 +60,10 @@ export default {
     },
     layer_wms: {
       required: true // layer wms for animation
+    },
+    update_animation_status:{
+      required:true,
+      type:Function
     }
   },
   data() {
@@ -74,6 +97,7 @@ export default {
       var duration = 2000;
 
       this.is_animation = true;
+      this.update_animation_status(true);
       this.layer_wms.redraw();
       this.layer_wms.on("load", () => {
         if (index < this.aviable_periods.length && this.is_animation) {
@@ -94,6 +118,7 @@ export default {
        * Brake animation
        */
       this.is_animation = false;
+      this.update_animation_status(false);
       this.layer_wms.off();
       clearTimeout(this.timer);
     },
@@ -109,6 +134,18 @@ export default {
       });
       this.$emit("update_desc", this.description);
       this.$emit("update_legend", this.legend);
+    },
+    update_indicator(){
+      /**
+       * Update after change indicator manually
+       * Problem is that period and months not updated
+       * after change indicator
+       * ???Test to fix it????
+       */
+      this.selected_indicator = event.target.value
+      this.selected_period = this.aviable_periods[0]
+      this.selected_month = this.aviable_months[0].key
+      this.update_layer();
     }
   },
   computed: {
@@ -243,6 +280,7 @@ export default {
     // set first indicator as selected
     this.selected_indicator = _indicators[0].name;
   }
+  
 };
 
 // add functions
@@ -252,29 +290,7 @@ function sleep(ms) {
 </script>
 
 <style lang="scss" scoped>
-.container {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  font-size: 84%;
-  z-index: 3;
-  white-space: nowrap;
-  border: 2px solid black;
-}
-.all_dates {
-  width: 300 px;
-  position: relative;
-  border: 2px solid black;
-  display: flex;
-  flex-direction: row;
-  bottom: 10%;
-  justify-content: space-between;
-  li {
-    padding: 10px;
-    margin: 10px;
-    border: 2px solid red;
-  }
-}
+
 </style>
 
 

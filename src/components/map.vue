@@ -1,9 +1,8 @@
 <template>
   <div>
-    <div :id="map_id"></div>
     <div id="indicators-app" class="indicators rounded">
-      <div class="active_icon class=temperature">
-        <span class="temperature" @click="show_lister($event,0)">
+      <div class="group-header" @click="show_lister($event,0,'temperature')">
+        <span class="temperature">
           Климатические
           показатели 3-ч часовые
         </span>
@@ -15,10 +14,11 @@
         v-on:update_legend="update_legend_string_root"
         :name_group="'Climate_terms_3_hours_data_focal'"
         :layer_wms="main_layer"
+        :update_animation_status="updated_animation_root"
       />
 
-      <div class="temperature">
-        <span class="some_days" @click="show_lister($event,1)">Какие то дни</span>
+      <div class="group-header" @click="show_lister($event,1,'some_days')">
+        <span class="some_days" >Данные AISORI</span>
       </div>
       <Lister
         v-show="active_group==='some_days'"
@@ -27,15 +27,32 @@
         v-on:update_legend="update_legend_string_root"
         :name_group="'Days_data_AISORI_focal'"
         :layer_wms="main_layer"
+        :update_animation_status="updated_animation_root"
       />
 
-      <div>Текущий показатель {{main_layer.wmsParams.layers}}</div>
+      <!-- <div>Текущий показатель {{main_layer.wmsParams.layers}}</div> -->
       <!-- <div id = "legend">Легенда URL {{legend_string}}</div> -->
       <div>
+        Легенда
         <img :src="legend_string" />
       </div>
-      <button @click="toggle_description_visibility">Информация о показателе</button>
-      <div v-if="desc_shown" id="description">{{this.description_text}}</div>
+      <div class="map_component_buttons">
+        <button
+          :disabled="is_animation_root"
+          @click="run_aimation_root"
+          class="btn btn-light play_anim"
+        ></button>
+        <button
+          :disabled="!is_animation_root"
+          @click="stop_animation_root"
+          class="btn btn-light stop_anim"
+        ></button>
+        <button @click="toggle_description_visibility" class="btn btn-light show_desc"></button>
+
+      </div>
+      <div v-if="desc_shown" class="description card rounded">
+        <p class="desc_text">{{this.$children[active_group_index].description}}</p>
+      </div>
     </div>
   </div>
 </template>
@@ -70,7 +87,9 @@ export default {
         "http://localhost:8080/geoserver/wms?REQUEST=GetLegendGraphic&VERSION=1.0.0&FORMAT=image/png&WIDTH=10&HEIGHT=20&LAYER=ucc:Mean_pressure_1971_2000_jul_focal.tif&style=raster_sld&legend_options=layout:horizontal",
       desc_shown: false,
       description_text: "init text",
-      layer_params: ""
+      layer_params: "",
+      active_group_index: 0,
+      is_animation_root: false
     };
   },
   methods: {
@@ -82,23 +101,25 @@ export default {
       this.init_map.setView(new L.LatLng(59, 59), 4);
 
       var osm_layer = new L.TileLayer(
-        "http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-        { attribution: "attribution test" }
+        "http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       );
 
       //this.main_layer = layer_wms;
       osm_layer.addTo(this.init_map);
       this.main_layer.addTo(this.init_map);
     },
-    show_lister(event, index) {
+    show_lister(event, index, active_group_name) {
       //console.log(event.target.className);
-      this.active_group = event.target.className;
+      this.active_group = active_group_name;
       //this.main_layer.redraw();
       this.$children[index].update_layer();
-       for (let index = 0; index < this.$children.length; index++) {
-         const element = this.$children[index];
-         element.brake_animation();
-       }
+      //this.$children[index].brake_animation();
+      // for (let index = 0; index < this.$children.length; index++) {
+      //    const element = this.$children[index];
+      //    element.brake_animation();
+      // }
+      this.stop_animation_root();
+      this.active_group_index = index;
     },
     update_map_size() {
       console.log("Map update");
@@ -119,6 +140,15 @@ export default {
     update_layer_root(obj) {
       console.log(obj);
       this.main_layer.setParams(obj);
+    },
+    run_aimation_root() {
+      this.$children[this.active_group_index].start_anim_periods();
+    },
+    stop_animation_root() {
+      this.$children[this.active_group_index].brake_animation();
+    },
+    updated_animation_root(value) {
+      this.is_animation_root = value;
     }
   },
   mounted() {
@@ -135,35 +165,5 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-#map_1 {
-  position: absolute;
-  left: 0;
-  top: 0;
-  height: 100%;
-  width: 100%;
-  z-index: 1;
-}
-#map_2 {
-  position: absolute;
-  left: 0;
-  top: 0;
-  height: 100%;
-  width: 100%;
-  z-index: 1;
-}
-#map_3 {
-  position: absolute;
-  left: 0;
-  top: 0;
-  height: 100%;
-  width: 100%;
-  z-index: 1;
-}
-#legend {
-  width: 200px;
-  display: inline-block;
-  border: 2px solid black;
-  word-wrap: break-word;
-}
 </style>
 

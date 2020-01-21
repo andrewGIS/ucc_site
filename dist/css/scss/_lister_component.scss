@@ -1,0 +1,17 @@
+.group_header {
+	margin-left: 15px;
+	display: flex;
+	flex-wrap: wrap;
+	background: #fff;
+  }
+  // lister
+  .select_container {
+	width: 100%;
+	display: flex;
+	flex-direction: column;
+	font-size: 84%;
+	z-index: 3;
+	//white-space: nowrap;
+	/* sborder: 2px solid black;*/
+  }
+  
