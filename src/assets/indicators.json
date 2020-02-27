@@ -1,0 +1,47 @@
+[
+    {
+        "name": "climatic_extremum",
+        "alias": "Экстремальные климатические характеристики",
+        "indicators": [
+            {
+                "name": "T_mean_min_year",
+                "alias": "Средняя минимальная температура",
+                "periods": [
+                    "1951_1980",
+                    "1961_1990",
+                    "1971_2000",
+                    "1981_2010"
+                ],
+                "months": [
+                    "None"
+                ],
+                "style": "ucc:T_mean_min_year",
+                "postfix_in_file": "with_curv_foc.tif",
+                "desc": "Средняя минимальная годовая температура воздуха за выбранный промежуток времени"
+            }
+        ]
+    },
+    {
+        "name": "mean_climatic_characterictics",
+        "alias": "Средние многолетние климатические характеристики",
+        "indicators": [
+            {
+                "name": "Prec_average",
+                "alias": "Среднее количество осадков",
+                "periods": [
+                    "1966_1995",
+                    "1971_2000",
+                    "1976_2005",
+                    "1981_2010",
+                    "1986_2015"
+                ],
+                "months": [
+                    "None"
+                ],
+                "style": "ucc:Prec_average",
+                "postfix_in_file": "focal.tif",
+                "desc": "Среднее количество осадков в среднем за год"
+            }
+        ]
+    }
+]
