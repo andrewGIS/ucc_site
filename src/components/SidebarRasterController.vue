@@ -9,6 +9,8 @@
         </b-form-checkbox>
       </div >
 
+      <b-button @click="startAnimPeriods">Запуск анимации</b-button>
+      <b-button @click="brakeAnimation">Остановка анимации</b-button>
         <!-- Second map controller -->
         <div v-if="showSecondMap">
           <raster-picker :map-num="2"></raster-picker>

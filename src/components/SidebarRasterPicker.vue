@@ -41,6 +41,12 @@
         </option>
       </b-form-select>
 
+      <b-button v-b-modal.modal-1 variant="info">Информация о показателе</b-button>
+
+      <b-modal id="modal-1" title="BootstrapVue">
+        <p class="my-4">{{this.description}}</p>
+      </b-modal>
+
     </div>
       <!-- Second map controller -->
   </div>
@@ -140,12 +146,28 @@ export default {
             return { key: 'year', alias: 'Год' }
           case 'jan':
             return { key: 'jan', alias: 'Январь' }
-          case 'jul':
-            return { key: 'jul', alias: 'Июль' }
-          case 'oct':
-            return { key: 'oct', alias: 'Октябрь' }
+          case 'feb':
+            return { key: 'feb', alias: 'Февраль' }
+          case 'mar':
+            return { key: 'mar', alias: 'Март' }
           case 'apr':
             return { key: 'apr', alias: 'Апрель' }
+          case 'may':
+            return { key: 'may', alias: 'Май' }
+          case 'jun':
+            return { key: 'jun', alias: 'Июнь' }
+          case 'jul':
+            return { key: 'jul', alias: 'Июль' }
+          case 'aug':
+            return { key: 'aug', alias: 'Август' }
+          case 'sep':
+            return { key: 'sep', alias: 'Сентябрь' }
+          case 'oct':
+            return { key: 'oct', alias: 'Октябрь' }
+          case 'nov':
+            return { key: 'nov', alias: 'Ноябрь' }
+          case 'dec':
+            return { key: 'dec', alias: 'Декабрь' }
           default:
             return { key: 'None', alias: 'Нет данных' }
         }

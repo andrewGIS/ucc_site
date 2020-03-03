@@ -1,21 +1,13 @@
 <template>
 <div class="map-wrapper">
       <div id="map1" :style="{width:mapWidth + '%'}">
-      <l-map ref="map" :zoom="zoom" :center="center">
+      <l-map  :zoom="zoom" :center="center">
 
         <l-tile-layer :url="osmURL"></l-tile-layer>
-        <l-wms-tile-layer ref="wms1"
-
-              :base-url="baseUrl"
-              :visible="true"
-              format="image/png"
-              layers="ucc:dev_mosaic"
-              :transparent="true"
-              :opacity=0.5
-              :options="WMSOptionsMap1"
-          />
+        <l-wms-tile-layer ref="wms1" :visible="WMSVisible" :base-url="baseUrl" :format="formatWMS" :layers="layers" :opacity="0.5" :options="WMSOptionsMap1">
+        </l-wms-tile-layer>
         <!-- <my-layer></my-layer> -->
-        <l-geo-json :geojson="geoJSONData" :visible="geoJSONVisibility" :options="options">
+        <l-geo-json :geojson="geoJSONData" :visible="geoJSONVisibility" :options="optionsGeoJSON">
           <l-icon></l-icon>
         </l-geo-json>
       </l-map>
@@ -26,7 +18,7 @@
               :base-url="baseUrl"
           />
           <l-tile-layer :url="osmURL"></l-tile-layer>
-          <l-wms-tile-layer
+          <l-wms-tile-layer v-if="WMSVisible" ref="wms2"
 
               :base-url="baseUrl"
               :visible="true"
@@ -35,7 +27,7 @@
               :transparent="true"
               :opacity=0.5
               :options="WMSOptionsMap2"
-          />
+          ></l-wms-tile-layer>
           <!-- <my-layer></my-layer> -->
         </l-map>
       </div>
@@ -61,7 +53,8 @@ export default {
   name: 'my-map',
   data () {
     return {
-      initMap: '',
+      map1: '',
+      wms1: '',
       geoJSON: '',
       filteredGeoJSON: '',
       zoom: 5,
@@ -70,7 +63,8 @@ export default {
       center: [59, 59],
       osmURL: 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
       baseUrl: 'http://localhost:8080/geoserver/ucc/ows?',
-      formatWMS: 'image/png'
+      formatWMS: 'image/png',
+      layers: 'ucc:dev_mosaic'
     }
   },
   created () {
@@ -103,7 +97,7 @@ export default {
     geoJSONVisibility () {
       return this.$store.getters.GEO_GEOJSON_VISIBILITY
     },
-    options () {
+    optionsGeoJSON () {
       return {
         onEachFeature: this.onEachFeature,
         pointToLayer: this.pointToLayer
@@ -145,42 +139,64 @@ export default {
     },
     // TODO: make refactoring for reference on one function with
     // parameters
-    WMSOptionsMap1 () {
-      console.log()
-      return {
-        // CQL_Filter: this.$store.getters.GET_MAP_FILTER(1)
-        CQL_Filter: "(group='Climate_terms_3hours_data_focal') AND (indicator='Mean_pressure')  AND (period='1981_2010') AND (month='jan')"
-        // format: 'image/png',
-        // layers: 'ucc:dev_mosaic',
-        // transparent: true
-      }
+    CQL_filter1 () {
+      return this.$store.getters.GET_MAP_FILTER(1)
     },
-    WMSOptionsMap2 () {
+    WMSOptionsMap1 () {
       return {
-        CQL_Filter: this.$store.getters.GET_MAP_FILTER(2)
+        CQL_Filter: this.$store.getters.GET_MAP_FILTER(1)
+        // CQL_Filter: "(group='Climate_terms_3hours_data_focal') AND (indicator='Mean_pressure')  AND (period='1981_2010') AND (month='jan')"
         // format: 'image/png',
         // layers: 'ucc:dev_mosaic',
         // transparent: true
       }
     }
+    // WMSOptionsMap2 () {
+    //   return {
+    //     CQL_Filter: this.$store.getters.GET_MAP_FILTER(2)
+    //     // format: 'image/png',
+    //     // layers: 'ucc:dev_mosaic',
+    //     // transparent: true
+    //   }
+    // }
   },
   components: {
+    // eslint-disable-next-line vue/no-unused-components
     LMap, LTileLayer, LGeoJson, LIcon, 'l-wms-tile-layer': LWMSTileLayer
   },
-  methods: {
-    addFilterType () {
-      return ''
+  watch: {
+    WMSVisible: function () {
+      this.wms1.remove()
+      // this.wms1.redraw()
+    },
+    // TO DO change watch on computer property
+    CQL_filter1: function () {
+      console.log('somethins change')
+      // console.log(`"${this.$store.getters.GET_MAP_FILTER(1)}"`)
+      this.wms1.wmsParams.CQL_Filter = this.$store.getters.GET_MAP_FILTER(1)
+      // this.wms1.options.CQL_Filter = this.$store.getters.GET_MAP_FILTER(1)
+      this.wms1.redraw()
+    //   // this.wms1.visible = this.$store.getters.GET_WMS_VISIBILITY
+    //   try {
+    //     this.wms1.redraw()
+    //   } catch (error) {
+    //     console.log(error)
     }
+    // WMSOptionsMap2: function () {
+    //   console.log(`"${this.$store.getters.GET_MAP_FILTER(1)}"`)
+    //   this.wms1.wmsParams.CQL_FILTER = this.$store.getters.GET_MAP_FILTER(1)
+    //   this.wms1.redraw()
+    // }
   },
   mounted () {
     this.$nextTick(() => {
-      console.log(this.$refs.wms1) // work as expected
+    //   console.log(this.$refs.wms1) // work as expected
+    // this.map1 = this.$refs.map1.mapObject // work as expected
+      this.wms1 = this.$refs.wms1.mapObject // work as expected
+    // this.map2 = this.$refs.map2.mapObject // work as expected
+    // this.wms2 = this.$refs.wms2.mapObject // work as expected
     })
   }
-  // ,
-  // async created () {
-  //   await this.$store.dispatch('getStations')
-  // }
 }
 </script>
 
