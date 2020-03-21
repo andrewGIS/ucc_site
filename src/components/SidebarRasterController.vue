@@ -1,21 +1,28 @@
 <template >
   <div>
-    <div>
-
-      <raster-picker :map-num="1"></raster-picker>
-
-        <b-form-checkbox v-model="showSecondMap" name="check-button" switch @change="toggleSecondMap">
-          Показать вторую карту
-        </b-form-checkbox>
-      </div >
-
-      <b-button @click="startAnimPeriods">Запуск анимации</b-button>
-      <b-button @click="brakeAnimation">Остановка анимации</b-button>
-        <!-- Second map controller -->
-        <div v-if="showSecondMap">
-          <raster-picker :map-num="2"></raster-picker>
-        </div>
-
+    <b-container>
+      <b-row>
+        <raster-picker ref="rasterPicker1" :map-num="1"></raster-picker>
+        <b-form-checkbox
+          v-model="showSecondMap"
+          name="check-button"
+          switch
+          @change="toggleSecondMap"
+        >Показать вторую карту</b-form-checkbox>
+        </b-row>
+      <b-row align-content="start">
+        <b-button @click="startAnimPeriods">
+          <b-icon-play></b-icon-play>
+        </b-button>
+        <b-button @click="brakeAnimation">
+          <b-icon-square></b-icon-square>
+        </b-button>
+      </b-row>
+      <!-- Second map controller -->
+      <b-row v-if="showSecondMap">
+          <raster-picker ref="rasterPicker1" :map-num="2"></raster-picker>
+      </b-row>
+    </b-container>
   </div>
 </template>
 
@@ -38,6 +45,7 @@ export default {
   },
   methods: {
     startAnimPeriods () {
+      this.$refs.rasterPicker1.startAnimation()
       /**
        * Animate period for selected indicator
        * Time control in duration variable
@@ -66,8 +74,7 @@ export default {
       /**
        * Brake animation
        */
-      this.isAnimation = false
-      this.updateAnimationStatus(false)
+      this.$refs.rasterPicker1.brakeAnimation()
       // this.layer_wms.off()
       // clearTimeout(this.timer)
     },
@@ -84,7 +91,8 @@ export default {
 // function sleep (ms) {
 //   return new Promise(resolve => setTimeout(resolve, ms));
 // }
-
 </script>
 
-<style></style>
+<style>
+
+</style>

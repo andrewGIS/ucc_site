@@ -1,10 +1,14 @@
 // import 'vue-sidebar-menu/dist/vue-sidebar-menu.css'
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
+import 'leaflet/dist/leaflet.css'
 import { store } from './store/Store'
 import Vue from 'vue'
 import Vuex from 'vuex'
 import App from './App.vue'
+// eslint-disable-next-line no-unused-vars
+// import _ from 'lodash'
+import _ from 'lodash'
 
 // import VueSidebarMenu from 'vue-sidebar-menu'
 
@@ -20,6 +24,7 @@ import { BootstrapVue, BootstrapVueIcons } from 'bootstrap-vue'
 
 // Vue.component('font-awesome-icon', FontAwesomeIcon)
 
+Object.defineProperty(Vue.prototype, '$_', { value: _ })
 Vue.use(BootstrapVue)
 Vue.use(BootstrapVueIcons)
 // Vue.use(VueSidebarMenu)

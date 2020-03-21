@@ -86,7 +86,7 @@ body {
   /* display: flex; */
   /* justify-content: center; */
   /* overflow: hidden; */
-  overflow: scroll;
+  /* overflow: scroll; */
 }
 #map_container {
   /* margin-left: 100px; */
@@ -95,7 +95,7 @@ body {
   /* position: relative; */
   /* width: 100%; */
   height: 100vh;
-  /* overflow: hidden; */
+  overflow-y: hidden;
 }
 #test_vuex {
   background: red;

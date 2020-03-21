@@ -1,54 +1,74 @@
 <template >
   <div>
-    <div class="select_container">
-      <!-- Select group of indicators -->
-      <b-form-select v-model="selectedGroup">
-        <option
-          v-for="group in aviableGroups"
-          :value="group.name"
-          :key="group.name"
-        >{{group.alias}}
-        </option>
-      </b-form-select>
+    <b-container>
+        <!-- Select group of indicators -->
+        <b-row>
+          Выберите группу показателей
+        </b-row>
+        <b-row>
+          <b-form-select v-model="selectedGroup">
+            <option
+              v-for="group in aviableGroups"
+              :value="group.name"
+              :key="group.name"
+            >{{group.alias}}
+            </option>
+          </b-form-select>
+        </b-row>
 
-      <!-- Select group of indicators -->
-      <b-form-select v-model="selectedIndicator">
-        <option
-          v-for="indicator in aviableGroupIndicators"
-          :value="indicator.name"
-          :key="indicator.name"
-        >{{indicator.alias}}
-        </option>
-      </b-form-select>
+        <b-row>
+          Выберите показатель
+        </b-row>
+        <!-- Select group of indicators -->
+        <b-row>
+          <b-form-select v-model="selectedIndicator">
+            <option
+              v-for="indicator in aviableGroupIndicators"
+              :value="indicator.name"
+              :key="indicator.name"
+            >{{indicator.alias}}
+            </option>
+          </b-form-select>
+        </b-row>
 
-      <!-- Select year of selected indicator -->
-      <b-form-select v-model="selectedPeriod">
-        <option
-          v-for="period in aviableIndicatorPeriods"
-          :value="period"
-          :key="period"
-        >{{period.replace("_","-")}}
-        </option>
-      </b-form-select>
+        <b-row>
+          Выберите временной промежуток
+        </b-row>
+        <!-- Select year of selected indicator -->
+        <b-row>
+          <b-form-select v-model="selectedYear">
+            <option
+              v-for="period in aviableIndicatorYears"
+              :value="period"
+              :key="period"
+            >{{period.replace("_","-").replace("before", "до ")}}
+            </option>
+          </b-form-select>
+        </b-row>
 
-      <!-- Select month of selected indicator -->
-      <b-form-select v-model="selectedMonth">
-        <option
-          v-for="month in aviableIndicatorMonths"
-          :value="month.key"
-          :key="month.alias"
-        >{{month.alias}}
-        </option>
-      </b-form-select>
+        <b-row>
+          Выберите период расчета
+        </b-row>
+        <b-row>
+        <!-- Select month of selected indicator -->
+          <b-form-select v-model="selectedPeriod">
+            <option
+              v-for="month in aviableIndicatorPeriods"
+              :value="month.key"
+              :key="month.alias"
+            >{{month.alias}}
+            </option>
+          </b-form-select>
+        </b-row>
 
-      <b-button v-b-modal.modal-1 variant="info">Информация о показателе</b-button>
+        <b-row style="padding:0">
+            <b-button style="width:100%" @click="openModal" variant="info">Информация о показателе</b-button>
+        </b-row>
 
-      <b-modal id="modal-1" title="BootstrapVue">
-        <p class="my-4">{{this.description}}</p>
+      </b-container>
+      <b-modal :id="mapNum.toString()"  title="Информация о показателе" ok-only>
+        <b-form-textarea plaintext :value="description"></b-form-textarea>
       </b-modal>
-
-    </div>
-      <!-- Second map controller -->
   </div>
 </template>
 
@@ -58,7 +78,7 @@
 // import json from '../assets/indicators.json'
 
 // import * as _ from 'lodash'
-import { allMetadata } from '../assets/indicators_meta_v2'
+import { allMetadata } from '../assets/RastersMetadata'
 
 export default {
   props: {
@@ -70,24 +90,21 @@ export default {
   name: 'raster-controller',
   data () {
     return {
-      // aviable groups
-      aviableGroups: [],
-      // data for selected group
-      selectedGroupData: [],
-      // data for selected indicators
-      selectedIndicatorData: '',
-      // selectedGroup
-      selectedGroup: '',
-      // store selected indicator name (Mean pressure for example)
-      selectedIndicator: '',
-      // store selected period value (1951_1958 for example)
-      selectedPeriod: '',
-      // store selected month value (Jan for example)
-      // keys defined in this.aviable_month
-      selectedMonth: ''
+      aviableGroups: [], // aviable groups
+      selectedGroupData: [], // data for selected group
+      selectedIndicatorData: '', // data for selected indicators
+      selectedGroup: '', // selectedGroup
+      selectedIndicator: '', // store selected indicator name (Mean pressure for example)
+      selectedYear: '', // store selected period value (1951_1958 for example)
+      selectedPeriod: '', // store selected month value (Jan for example)
+      isAnimation: false,
+      timer: '' // for animation
     }
   },
   methods: {
+    openModal () {
+      this.$bvModal.show(this.mapNum.toString())
+    },
     updateGroup () {
       /**
        * Update after change indicator manually
@@ -100,8 +117,34 @@ export default {
       // this.updateLayer()
     },
     updateIndicator () {
-      this.selectedPeriod = this.aviableIndicatorPeriods[0]
-      this.selectedMonth = this.aviableIndicatorMonths[0].key
+      this.selectedYear = this.aviableIndicatorYears[0]
+      this.selectedPeriod = this.aviableIndicatorPeriods[0].key
+    },
+    startAnimation () {
+      let index = this.$_.indexOf(this.aviableIndicatorYears, this.selectedYear) + 1
+      const duration = 2000
+
+      // const ctx = this
+      // this.selectedYear = this.aviableIndicatorYears[index]
+      this.isAnimation = true
+      this.wmsAnimLayer.redraw()
+      this.wmsAnimLayer.on('load', () => {
+        if (index < this.aviableIndicatorYears.length && this.isAnimation) {
+          this.timer = setTimeout(() => {
+            // console.log(this.aviableIndicatorYears[index])
+            this.selectedYear = this.aviableIndicatorYears[index]
+            index += 1
+            this.wmsAnimLayer.redraw()
+          }, duration)
+        } else {
+          this.brakeAnimation()
+        }
+      })
+    },
+    brakeAnimation () {
+      this.isAnimation = false
+      this.wmsAnimLayer.off()
+      clearTimeout(this.timer)
     }
   },
   computed: {
@@ -121,7 +164,7 @@ export default {
     //   return this.selectedGroupData.indicators.find(indicator =>
     //     indicator.name === this.selectedIndicator)
     // },
-    aviableIndicatorPeriods () {
+    aviableIndicatorYears () {
       /**
        * Return aviable periods for selected indicator (1951-1960 for example)
        * from metadata
@@ -129,10 +172,10 @@ export default {
        * return list of objects [periods]
        */
       // let selectedGroupData = allMetadata.groups.find(group => group.name === this.selectedGroup)
-      return this.selectedIndicatorData.periods
+      return this.selectedIndicatorData.years
       // return []
     },
-    aviableIndicatorMonths () {
+    aviableIndicatorPeriods () {
       /**
        * Return aviable months for selected indicator
        * from metadata
@@ -140,38 +183,45 @@ export default {
        * return list of objects [{month_key:month_alias}]
        * sample output [{month_key:month_alias}]
        */
-      return this.selectedIndicatorData.months.map(month => {
+      const month = this.selectedIndicatorData.periods.map(month => {
         switch (month) {
           case 'year':
-            return { key: 'year', alias: 'Год' }
+            return { key: 'year', alias: 'Год', num: 13 }
           case 'jan':
-            return { key: 'jan', alias: 'Январь' }
+            return { key: 'jan', alias: 'Январь', num: 1 }
           case 'feb':
-            return { key: 'feb', alias: 'Февраль' }
+            return { key: 'feb', alias: 'Февраль', num: 2 }
           case 'mar':
-            return { key: 'mar', alias: 'Март' }
+            return { key: 'mar', alias: 'Март', num: 3 }
           case 'apr':
-            return { key: 'apr', alias: 'Апрель' }
+            return { key: 'apr', alias: 'Апрель', num: 4 }
           case 'may':
-            return { key: 'may', alias: 'Май' }
+            return { key: 'may', alias: 'Май', num: 5 }
           case 'jun':
-            return { key: 'jun', alias: 'Июнь' }
+            return { key: 'jun', alias: 'Июнь', num: 6 }
           case 'jul':
-            return { key: 'jul', alias: 'Июль' }
+            return { key: 'jul', alias: 'Июль', num: 7 }
           case 'aug':
-            return { key: 'aug', alias: 'Август' }
+            return { key: 'aug', alias: 'Август', num: 8 }
           case 'sep':
-            return { key: 'sep', alias: 'Сентябрь' }
+            return { key: 'sep', alias: 'Сентябрь', num: 9 }
           case 'oct':
-            return { key: 'oct', alias: 'Октябрь' }
+            return { key: 'oct', alias: 'Октябрь', num: 10 }
           case 'nov':
-            return { key: 'nov', alias: 'Ноябрь' }
+            return { key: 'nov', alias: 'Ноябрь', num: 11 }
           case 'dec':
-            return { key: 'dec', alias: 'Декабрь' }
+            return { key: 'dec', alias: 'Декабрь', num: 12 }
+          case 'warm':
+            return { key: 'warm', alias: 'Теплый период', num: 14 }
+          case 'cold':
+            return { key: 'cold', alias: 'Холодный период', num: 15 }
+          case 'none':
+            return { key: 'none', alias: 'Нет данных', num: 16 }
           default:
-            return { key: 'None', alias: 'Нет данных' }
+            return { key: 'none', alias: 'Ошибка', num: 17 }
         }
       })
+      return this.$_.sortBy(month, 'num')
     },
     style () {
       /**
@@ -185,39 +235,27 @@ export default {
        */
       return this.selectedIndicatorData.desc
     },
-    legend () {
-      /**
-       * Computed legend URL for selected layer
-       */
-      // return (
-      //   'http://ogs.psu.ru:8080/geoserver/wms' +
-      //   '?REQUEST=GetLegendGraphic&VERSION=1.0.0&FORMAT=image/' +
-      //   `png&WIDTH=10&HEIGHT=10&LAYER=${this.layerUrl}&style=` +
-      //   `${this.style + '_legend'}&legend_options=layout:vertical`
-      // )
-      return ''
-    },
     layerFilter () {
       /**
        * Computed URL of selected layer
        * ucc - store on Geoserver !!!MAY CHANGE!!
        */
-      // if (this.selectedMonth === 'None') {
+      // if (this.selectedPeriod === 'None') {
       //   summaryFilter =
       //     `${this.workspaceName}:${this.selectedIndicator}` +
-      //     `_${this.selectedPeriod}`
+      //     `_${this.selectedYear}`
       // } else {
       //   summaryFilter =
       //     `${this.workspaceName}:${this.selectedIndicator}` +
-      //     `_${this.selectedPeriod}` +
-      //     `_${this.selectedMonth}`
+      //     `_${this.selectedYear}` +
+      //     `_${this.selectedPeriod}`
       // }
       const groupFldName = 'group'
       const indicatorFldName = 'indicator'
-      const periodFldName = 'period'
-      const monthFldName = 'month'
+      const periodFldName = 'year'
+      const monthFldName = 'period'
 
-      const summaryFilter = `(${groupFldName}='${this.selectedGroup}') AND (${indicatorFldName}='${this.selectedIndicator}')  AND (${periodFldName}='${this.selectedPeriod}') AND (${monthFldName}='${this.selectedMonth}')`
+      const summaryFilter = `(${groupFldName}='${this.selectedGroup}') AND (${indicatorFldName}='${this.selectedIndicator}')  AND (${periodFldName}='${this.selectedYear}') AND (${monthFldName}='${this.selectedPeriod}')`
 
       // this.$emit('changeURL')
       // this.$store.commit(`'${this.commitMethod}'`, urlString)
@@ -226,6 +264,9 @@ export default {
       //   url: urlString
       // })
       return summaryFilter
+    },
+    wmsAnimLayer () {
+      return this.$store.getters.GET_WMS_LAYER
     }
   },
   watch: {
@@ -242,14 +283,22 @@ export default {
       this.selectedGroupData = allMetadata.groups.find(group =>
         group.name === this.selectedGroup)
       this.selectedIndicator = this.selectedGroupData.indicators[0].name
+      this.selectedYear = this.selectedGroupData.indicators[0].years[0]
       this.selectedPeriod = this.selectedGroupData.indicators[0].periods[0]
-      this.selectedMonth = this.selectedGroupData.indicators[0].months[0]
     },
     selectedIndicator: function () {
       this.selectedIndicatorData = this.selectedGroupData.indicators.find(indicator =>
         indicator.name === this.selectedIndicator)
+      this.selectedYear = this.selectedIndicatorData.years[0]
       this.selectedPeriod = this.selectedIndicatorData.periods[0]
-      this.selectedMonth = this.selectedIndicatorData.months[0]
+    },
+    style: function () {
+      this.$store.dispatch('LOAD_LEGEND_JSON', {
+        mapNum: this.mapNum,
+        styleName: this.style
+      })
+      this.wmsAnimLayer.wmsParams.styles = this.style
+      this.wmsAnimLayer.redraw()
     }
   },
   created () {
@@ -269,8 +318,8 @@ export default {
     this.selectedGroupData = allMetadata.groups[0]
     this.selectedIndicator = allMetadata.groups[0].indicators[0].name
     this.selectedIndicatorData = allMetadata.groups[0].indicators[0]
+    this.selectedYear = allMetadata.groups[0].indicators[0].years[0]
     this.selectedPeriod = allMetadata.groups[0].indicators[0].periods[0]
-    this.selectedMonth = allMetadata.groups[0].indicators[0].months[0]
 
     // this.$store.commit(this.commitMethod, this.layerUrl)
 
