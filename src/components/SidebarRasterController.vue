@@ -17,10 +17,14 @@
         <b-button @click="brakeAnimation">
           <b-icon-square></b-icon-square>
         </b-button>
+        <!-- experimantal function of idaentification  -->
+        <!-- <b-button @click="toggleInfo" :disabled="showSecondMap">
+          <b-icon-info></b-icon-info>
+        </b-button> -->
       </b-row>
       <!-- Second map controller -->
       <b-row v-if="showSecondMap">
-          <raster-picker ref="rasterPicker1" :map-num="2"></raster-picker>
+          <raster-picker ref="rasterPicker2" :map-num="2"></raster-picker>
       </b-row>
     </b-container>
   </div>
@@ -45,41 +49,24 @@ export default {
   },
   methods: {
     startAnimPeriods () {
+      this.showSecondMap = false
+      this.$store.commit('SET_SECOND_MAP_VISIBILITY', false)
       this.$refs.rasterPicker1.startAnimation()
-      /**
-       * Animate period for selected indicator
-       * Time control in duration variable
-       */
-      // var index = _.indexOf(this.aviable_periods, this.selected_period) + 1
-
-      // var duration = 2000
-
-      // this.isAnimation = true
-      // // this.updateAnimationStatus(true)
-      // // this.layerWms.redraw()
-      // // this.layerWms.on('load', () => {
-      //   if (index < this.aviable_periods.length && this.is_animation) {
-      //     this.timer = setTimeout(() => {
-      //       this.selected_period = this.aviable_periods[index]
-      //       this.update_layer()
-      //       index += 1
-      //       this.layer_wms.redraw()
-      //     }, duration)
-      //   } else {
-      //     this.brake_animation()
-      //   }
-      // })
     },
     brakeAnimation () {
-      /**
-       * Brake animation
-       */
       this.$refs.rasterPicker1.brakeAnimation()
-      // this.layer_wms.off()
-      // clearTimeout(this.timer)
     },
     toggleSecondMap (payload) {
+      // this.$store.commit('SET_INFO_STATUS', !this.infoStatus)
       this.$store.commit('SET_SECOND_MAP_VISIBILITY', payload)
+    },
+    toggleInfo () {
+      this.$store.commit('SET_INFO_STATUS', !this.infoStatus)
+    }
+  },
+  computed: {
+    infoStatus () {
+      return this.$store.getters.GET_INFO_STATUS
     }
   },
   components: {

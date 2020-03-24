@@ -65,7 +65,7 @@ export default {
       }
     },
     visible () {
-      return this.$store.getters.GET_WMS_VISIBILITY
+      return this.$store.getters.GET_LEGEND_VISIBILLITY
     }
   },
   components: {

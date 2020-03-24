@@ -1,12 +1,12 @@
 <template >
   <div>
-    <b-container>
+    <b-container style="font-size:12px">
         <!-- Select group of indicators -->
         <b-row>
           Выберите группу показателей
         </b-row>
         <b-row>
-          <b-form-select v-model="selectedGroup">
+          <b-form-select size="sm" v-model="selectedGroup">
             <option
               v-for="group in aviableGroups"
               :value="group.name"
@@ -21,7 +21,7 @@
         </b-row>
         <!-- Select group of indicators -->
         <b-row>
-          <b-form-select v-model="selectedIndicator">
+          <b-form-select size="sm" v-model="selectedIndicator">
             <option
               v-for="indicator in aviableGroupIndicators"
               :value="indicator.name"
@@ -36,7 +36,7 @@
         </b-row>
         <!-- Select year of selected indicator -->
         <b-row>
-          <b-form-select v-model="selectedYear">
+          <b-form-select size="sm" v-model="selectedYear">
             <option
               v-for="period in aviableIndicatorYears"
               :value="period"
@@ -51,7 +51,7 @@
         </b-row>
         <b-row>
         <!-- Select month of selected indicator -->
-          <b-form-select v-model="selectedPeriod">
+          <b-form-select size="sm" v-model="selectedPeriod">
             <option
               v-for="month in aviableIndicatorPeriods"
               :value="month.key"
@@ -62,7 +62,7 @@
         </b-row>
 
         <b-row style="padding:0">
-            <b-button style="width:100%" @click="openModal" variant="info">Информация о показателе</b-button>
+            <b-button size="sm" style="width:100%" @click="openModal" variant="info">Информация о показателе</b-button>
         </b-row>
 
       </b-container>
@@ -297,8 +297,12 @@ export default {
         mapNum: this.mapNum,
         styleName: this.style
       })
-      this.wmsAnimLayer.wmsParams.styles = this.style
-      this.wmsAnimLayer.redraw()
+      this.$store.commit('SET_MAP_STYLE', {
+        mapNum: this.mapNum,
+        styleName: this.style
+      })
+      // this.wmsAnimLayer.wmsParams.styles = this.style
+      // this.wmsAnimLayer.redraw()
     }
   },
   created () {

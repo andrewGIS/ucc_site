@@ -108,7 +108,7 @@ body {
 #side_bar_container{
   width: 350px;
   float: left;
-  overflow-y: scroll;
+  overflow-y: hidden;
 }
 /* .collapsed {
   margin-left:350px;

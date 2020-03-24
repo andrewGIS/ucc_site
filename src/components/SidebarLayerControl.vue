@@ -3,7 +3,7 @@
     <b-container style="font-size:12px">
         <b-row>
           <b-col>
-            <b-form-checkbox v-model="usingDamageTypeFilter" name="check-button" switch>
+            <b-form-checkbox v-model="usingDamageTypeFilter" @change="clearDamageTypeFilter" name="check-button" switch>
               Использовать фильтр по типу явления
             </b-form-checkbox>
             <b-form-group label="Выберите типы явления" v-bind:disabled="!usingDamageTypeFilter">
@@ -18,30 +18,8 @@
             </b-form-checkbox>
             </b-form-group>
           </b-col>
-
-          <!-- <b-form-checkbox v-model="usingYearFilter" name="check-button" switch>
-            Использовать фильтр по году
-          </b-form-checkbox>
-          <b-form-group label="Выберите год" v-bind:disabled="!usingYearFilter">
-            <div> -->
-
-            <!-- <div>
-                <b-form-datepicker v-model="startDate" locale="en"></b-form-datepicker>
-            </div>
-            <div>
-                <b-form-datepicker v-model="endDate" locale="en"></b-form-datepicker>
-            </div> -->
-
-            <!-- <div>
-              <b-form-input v-model="startYear" placeholder="Начальный год"></b-form-input>
-            </div>
-            <div>
-              <b-form-input v-model="endYear" placeholder="Конечный год"></b-form-input>
-            </div>
-            </div>
-          </b-form-group> -->
           <b-col>
-            <b-form-checkbox v-model="usingMonthFilter" name="check-button" switch>
+            <b-form-checkbox v-model="usingMonthFilter" @change="clearMonthFilter" name="check-button" switch>
               Использовать фильтр по типу месяцу
             </b-form-checkbox>
             <b-form-group label="Выберите месяцы" v-bind:disabled="!usingMonthFilter">
@@ -60,7 +38,7 @@
 
           <!-- TO DO selection with tags bootstrap a few reigons -->
         <b-row>
-            <b-form-checkbox v-model="usingRegionFilter" name="check-button" switch>
+            <b-form-checkbox v-model="usingRegionFilter" @change="clearFilterRegion" name="check-button" switch>
               Использовать фильтр по субъекту
             </b-form-checkbox>
 
@@ -76,7 +54,7 @@
         <b-row>
           <b-button size="sm" @click="applyFilter" v-bind:disabled="!mergedCondition">Применить фильтр</b-button>
 
-          <b-button size="sm" @click="clearFilter">Очистить фильтры</b-button>
+          <b-button size="sm" @click="clearFilters">Очистить все фильтры</b-button>
 
           <b-button  size="sm" v-bind:class ="{disabled:!isFilterGeoJSON}" v-b-modal.modal-graphic>Показать таблицу</b-button>
         </b-row>
@@ -95,7 +73,7 @@
 
 <script>
 
-import GraphicBuilder from './GraphicBuilder.vue'
+import GraphicBuilder from './GraphicBuilderDynamics.vue'
 
 export default {
   data: function () {
@@ -164,10 +142,6 @@ export default {
         return null
       }
     },
-    yearCondition () {
-      // name of field on geoserver where damage type is stored
-      return ''
-    },
     monthCondtion () {
       const monthFieldName = 'month'
       if (this.usingMonthFilter) {
@@ -212,7 +186,7 @@ export default {
     applyFilter () {
       this.$store.dispatch('LOAD_WMOS_BY_CONDITION', this.mergedCondition)
     },
-    clearFilter () {
+    clearFilters () {
       console.log('Clear filter')
       this.$store.commit('CLEAR_GEO_JSON_FILTER')
       this.selectedDamageTypes = []
@@ -222,6 +196,21 @@ export default {
       this.usingDamageTypeFilter = false
       this.usingMonthFilter = false
       this.usingRegionFilter = false
+    },
+    clearFilterRegion (usingFilter) {
+      if (!usingFilter) {
+        this.selectedRegions = []
+      }
+    },
+    clearDamageTypeFilter (usingFilter) {
+      if (!usingFilter) {
+        this.selectedDamageTypes = []
+      }
+    },
+    clearMonthFilter (usingFilter) {
+      if (!usingFilter) {
+        this.selectedMonths = []
+      }
     }
   },
   destroyed () {

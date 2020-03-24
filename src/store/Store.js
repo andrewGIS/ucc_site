@@ -36,11 +36,17 @@ export const store = new Vuex.Store({
       }
     },
     tableData: {}, // requested table data from geoserver
-    selectedWMOs: [],
-    selectedRegion: '',
+    selectedStations: [],
+    eventsData: {},
     WMSLayerAnim: '',
-    activeWMSStyle: '',
-    legendJSON: {}
+    legendJSON: {},
+    legendVisibillity: false,
+    statusInfo: false, // info in cursor on map1,
+    geoJSONClick: false,
+    extremVisibillity: false,
+    extremeSelectedEvent: {},
+    extremeSelectedDate: '',
+    extremeWMS: {}
   },
   getters: {
     GET_STATIONS: state => {
@@ -104,6 +110,33 @@ export const store = new Vuex.Store({
     },
     GET_MAP_STYLE: (state) => (num) => {
       return state.mapParams[num].style
+    },
+    GET_INFO_STATUS: (state) => {
+      return state.statusInfo
+    },
+    GET_GEOJSON_CLIK: (state) => {
+      return state.geoJSONClick
+    },
+    GET_SELECTED_STATIONS_NAMES: (state) => {
+      return state.selectedStations
+    },
+    GET_EVENTS_DATA: (state) => {
+      return state.eventsData
+    },
+    GET_EXTREME_VISIBILLITY: (state) => {
+      return state.extremVisibillity
+    },
+    GET_EXTREME_SELECTED_EVENT: (state) => {
+      return state.extremeSelectedEvent
+    },
+    GET_EXTREME_SELECTED_DATE: state => {
+      return state.extremeSelectedDate
+    },
+    GET_EXTREME_WMS: state => {
+      return state.extremeWMS
+    },
+    GET_LEGEND_VISIBILLITY: state => {
+      return state.legendVisibillity
     }
   },
   mutations: {
@@ -202,7 +235,37 @@ export const store = new Vuex.Store({
       state.mapParams[payload.mapNum].legendJSON = payload.data
     },
     SET_MAP_STYLE (state, payload) {
-      state.mapParams[payload.mapNum].style = payload.style
+      state.mapParams[payload.mapNum].style = payload.styleName
+    },
+    SET_INFO_STATUS (state, payload) {
+      state.statusInfo = payload
+    },
+    SET_GEOJSON_CLICK (state, payload) {
+      state.geoJSONClick = payload
+    },
+    ADD_WMO_NAME (state, payload) {
+      state.selectedStations.push(payload)
+    },
+    CLEAR_SELECTED_WMOS (state) {
+      state.selectedStations = []
+    },
+    SET_EVENTS_DATA (state, payload) {
+      state.eventsData = payload
+    },
+    SET_EXTREME_VISIBILLITY (state, payload) {
+      state.extremVisibillity = payload
+    },
+    SET_EXTREME_SELECTED_EVENT (state, payload) {
+      state.extremeSelectedEvent = payload
+    },
+    SET_EXTREME_SELECTED_DATE (state, payload) {
+      state.extremeSelectedDate = payload
+    },
+    SET_EXTREME_WMS (state, payload) {
+      state.extremeWMS = payload
+    },
+    SET_LEGEND_VISIBILLITY (state, payload) {
+      state.legendVisibillity = payload
     }
   },
   actions: {
@@ -262,7 +325,17 @@ export const store = new Vuex.Store({
           data: {}
         })
       }
+    },
+    LOAD_EVENTS_BY_STATIONS_NAME: async ({ state, commit }) => {
+      const condition = `name in (${state.selectedStations.map(stationName => `'${stationName}'`)
+        .join(',')})`
+      const url = `${state.host}/geoserver/ucc/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=${state.gsWorkspaceName}:${state.gsLayerJoined}&outputFormat=application/json&CQL_FILTER=${condition}&maxFeatures=1000`
+      console.log(url)
+      await fetch(url)
+        .then(response => { return response.json() })
+        .then(data => {
+          commit('SET_EVENTS_DATA', data)
+        })
     }
-    // Here we will create Larry
   }
 })
