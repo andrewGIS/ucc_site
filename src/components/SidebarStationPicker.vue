@@ -4,16 +4,19 @@
 
         Введите название станции в поле или кликниет на карте
         <b-form-tags size="sm" input-id="tags-stations" :disabled="true" placeholder="Выбранные станции" v-model="selectedStationsNames"></b-form-tags>
-
-        <b-form-input size="sm" list="input-stations" id="input-station-list" placeholder="Введите имя станции" v-model="selectedStation"></b-form-input>
+    </b-row>
+    <b-row>
+        <b-form-input class="w-75" size="sm" list="input-stations" id="input-station-list" placeholder="Введите имя станции" v-model="selectedStation"></b-form-input>
 
         <b-form-datalist id="input-stations" :options="stationsNames"></b-form-datalist>
 
-        <b-button size="sm" @click="addStationByName"> Добавить станию</b-button>
-        <b-button size="sm" @click="clearSelectedStationsNames"> Очистить выбранные станции</b-button>
+        <b-button class="w-25" size="sm" @click="addStationByName" v-b-tooltip.hover title="Добавить станцию к выбранным">+</b-button>
     </b-row>
     <b-row>
-        <b-button size="sm" @click="getEventsByStations" :disabled="selectedStationsNames.length===0"> Показать список опасных явлений</b-button>
+        <b-button class="w-100" size="sm" @click="clearSelectedStationsNames"> Очистить выбранные станции</b-button>
+    </b-row>
+    <b-row>
+        <b-button class="w-100" size="sm" @click="getEventsByStations" :disabled="selectedStationsNames.length===0"> Показать список опасных явлений</b-button>
     </b-row>
 
     <b-modal id="modal-stations-builder" title="Опасные явления по выбранным станциям" size="xl">

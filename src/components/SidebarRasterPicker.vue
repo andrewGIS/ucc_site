@@ -1,6 +1,6 @@
 <template >
   <div>
-    <b-container style="font-size:12px">
+    <b-container>
         <!-- Select group of indicators -->
         <b-row>
           Выберите группу показателей
@@ -66,8 +66,18 @@
         </b-row>
 
       </b-container>
-      <b-modal :id="mapNum.toString()"  title="Информация о показателе" ok-only>
-        <b-form-textarea plaintext :value="description"></b-form-textarea>
+      <b-modal size="lg" :id="mapNum.toString()"  title="Информация о показателе" ok-only>
+        <!-- <b-form-textarea plaintext :value="description"></b-form-textarea> -->
+          <div>
+            <b-table stacked :items="description" :fields="fieldsDesc">
+              <template v-slot:cell(source)="data">
+                <a :href="data.value" target="_blank" >{{data.value}}</a>
+            </template>
+              <template v-slot:cell(methodLink)="data">
+                <a :href="data.value" target="_blank" >{{data.value}}</a>
+            </template>
+            </b-table>
+        </div>
       </b-modal>
   </div>
 </template>
@@ -98,7 +108,29 @@ export default {
       selectedYear: '', // store selected period value (1951_1958 for example)
       selectedPeriod: '', // store selected month value (Jan for example)
       isAnimation: false,
-      timer: '' // for animation
+      timer: '', // for animation,
+      fieldsDesc: [
+        {
+          key: 'source',
+          label: 'Источник'
+        },
+        {
+          key: 'spatialRes',
+          label: 'Пространственное разрешение'
+        },
+        {
+          key: 'countStations',
+          label: 'Количество станций, использованных для интерполяции'
+        },
+        {
+          key: 'method',
+          label: 'Методика расчета'
+        },
+        {
+          key: 'methodLink',
+          label: 'Описание методики'
+        }
+      ]
     }
   },
   methods: {

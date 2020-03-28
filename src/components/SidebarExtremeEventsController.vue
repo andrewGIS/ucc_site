@@ -1,8 +1,8 @@
 <template>
-<div style="font-size:13px">
+<div>
     <b-container>
       <b-row align-h="center">
-      <span style="font-size:14px; font-weight:bold;">Выдающие случаи погодных явлений</span>
+      <span style="font-weight:bold;">Выдающие случаи погодных явлений</span>
       </b-row>
         <b-form-group>
             <b-form-radio-group v-model="selectedEvent">
@@ -12,13 +12,16 @@
                       <b-form-radio :value="event"> {{event.alias}}</b-form-radio>
                     </b-col>
                     <b-col align-h="center">
-                      <b-button :key="index" size="sm"><b-icon-info></b-icon-info></b-button>
+                      <b-button :key="index" size="sm" @click="getInfo(event.name)"><b-icon-info></b-icon-info></b-button>
                     </b-col>
                   </b-row>
                 </template>
             </b-form-radio-group>
         </b-form-group>
     </b-container>
+    <b-modal size="lg" id="eventInfo" title="Информация о явлении" ok-only>
+        <b-form-textarea plaintext :value="infoText"></b-form-textarea>
+      </b-modal>
 </div>
 </template>
 
@@ -27,15 +30,36 @@ export default {
   name: 'extremeEventsController',
   data () {
     return {
-      eventsDesc: [{
-        name: 'prec_huge_2018',
-        alias: 'Сильные осадки в июле 2019 года',
-        info: '',
-        dates: ['2019071212_003', '2019071212_006', '2019071212_009', '2019071212_012', '2019071212_015', '2019071212_018', '2019071212_021', '2019071212_024', '2019071212_027', '2019071312_003', '2019071312_006', '2019071312_009', '2019071312_012', '2019071312_015', '2019071312_018', '2019071312_021', '2019071312_024', '2019071312_027', '2019071412_003', '2019071412_006', '2019071412_009', '2019071412_012', '2019071412_015', '2019071412_018', '2019071412_021', '2019071412_024', '2019071412_027', '2019071512_003', '2019071512_006', '2019071512_009', '2019071512_012', '2019071512_015', '2019071512_018', '2019071512_021', '2019071512_024', '2019071512_027'],
-        layerName: 'Rasters_Prec_July_2019',
-        styleName: 'ucc:Rasters_Prec_July_2019'
-      }],
-      selectedEvent: {}
+      eventsDesc: [
+        {
+          name: 'prec_huge_2018',
+          alias: 'Сильные осадки в июле 2019 года',
+          info: 'Сильные осадки в июле 2019. Показаны данные по срокам измерения',
+          // in correct order
+          dates: ['20190712_003', '20190712_006', '20190712_009', '20190712_012', '20190712_015', '20190712_018', '20190712_021', '20190712_024', '20190712_027', '20190713_003', '20190713_006', '20190713_009', '20190713_012', '20190713_015', '20190713_018', '20190713_021', '20190713_024', '20190713_027', '20190714_003', '20190714_006', '20190714_009', '20190714_012', '20190714_015', '20190714_018', '20190714_021', '20190714_024', '20190714_027', '20190715_003', '20190715_006', '20190715_009', '20190715_012', '20190715_015', '20190715_018', '20190715_021', '20190715_024', '20190715_027'],
+          layers: ['ucc:Rasters_Prec_July_2019'],
+          legendStylename: 'ucc:Rasters_Prec_July_2019',
+          fieldsFilter: ['location']
+        },
+        {
+          name: 'strong_forest_2009',
+          alias: 'Сильные морозы в декабре 2009 года',
+          info: 'Сильные морозы в декабре 2009 года. Показаны изобары и температура воздуха',
+          // in correct order
+          dates: ['20091211_00', '20091211_06', '20091211_12', '20091211_18', '20091212_00', '20091212_06', '20091212_12', '20091212_18', '20091213_00', '20091213_06', '20091213_12', '20091213_18', '20091214_00', '20091214_06', '20091214_12', '20091214_18', '20091215_00', '20091215_06', '20091215_12', '20091215_18', '20091216_00', '20091216_06', '20091216_12', '20091216_18', '20091217_00', '20091217_06', '20091217_12', '20091217_18', '20091218_00', '20091218_06', '20091218_12', '20091218_18', '20091219_00', '20091219_06', '20091219_12', '20091219_18', '20091220_00', '20091220_06', '20091220_12', '20091220_18', '20091221_00', '20091221_06', '20091221_12', '20091221_18', '20091222_00', '20091222_06', '20091222_12', '20091222_18'],
+          layers: ['ucc:Rasters_T_December_2019', 'ucc:Lines_T_December_2019'],
+          legendStylename: 'ucc:Rasters_T_December_2009',
+          fieldsFilter: ['location', 'date']
+        }
+      ],
+      selectedEvent: {},
+      infoText: ''
+    }
+  },
+  methods: {
+    getInfo (e) {
+      this.infoText = this.eventsDesc.filter(event => event.name === e)[0].info
+      this.$bvModal.show('eventInfo')
     }
   },
   watch: {
@@ -45,7 +69,7 @@ export default {
       this.$store.commit('SET_EXTREME_SELECTED_EVENT', this.selectedEvent)
       this.$store.dispatch('LOAD_LEGEND_JSON', {
         mapNum: 1,
-        styleName: this.selectedEvent.styleName
+        styleName: this.selectedEvent.legendStylename
       })
     }
   }

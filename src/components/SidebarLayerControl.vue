@@ -1,6 +1,11 @@
 <template>
   <div>
     <b-container style="font-size:12px">
+      <b-row align-h="center">
+          <div style="text-transform: uppercase;font-size:14px;" v-if="isFilterGeoJSON"> Отобрано станций:
+            <span style="font-weight:bold">{{ this.countFiltered }}</span>
+            </div>
+        </b-row>
         <b-row>
           <b-col>
             <b-form-checkbox v-model="usingDamageTypeFilter" @change="clearDamageTypeFilter" name="check-button" switch>
@@ -16,6 +21,7 @@
             >
               {{ damageType.text }}
             </b-form-checkbox>
+            <b-form-invalid-feedback style="font-size:14px;font-weight:bold;" :state="validDamageType">Выберите хотя бы один тип</b-form-invalid-feedback>
             </b-form-group>
           </b-col>
           <b-col>
@@ -32,6 +38,7 @@
             >
               {{ month.text }}
             </b-form-checkbox>
+            <b-form-invalid-feedback style="font-size:14px;font-weight:bold;" :state="validMonths">Выберите хотя бы один месяц</b-form-invalid-feedback>
             </b-form-group>
           </b-col>
         </b-row>
@@ -41,26 +48,33 @@
             <b-form-checkbox v-model="usingRegionFilter" @change="clearFilterRegion" name="check-button" switch>
               Использовать фильтр по субъекту
             </b-form-checkbox>
+        </b-row>
 
+        <b-row>
             <b-form-tags size="sm" input-id="tags-regions" :disabled="true" placeholder="Выбранные субъекты" v-model="selectedRegions"></b-form-tags>
+            <b-form-invalid-feedback style="font-size:14px;font-weight:bold;" :state="validRegions" >Выберите хотя бы один регион</b-form-invalid-feedback>
+        </b-row>
+        <b-row align-h="start">
+              <b-form-input class="w-75" size="sm" list="input-regions" v-bind:disabled="!usingRegionFilter" id="input-region-list" placeholder="Введите имя субъекта" v-model="selectedRegion"></b-form-input>
 
-            <b-form-input size="sm" list="input-regions" v-bind:disabled="!usingRegionFilter" id="input-region-list" placeholder="Введите имя субъекта" v-model="selectedRegion"></b-form-input>
-
-            <b-button size="sm" @click="addRegion"> Добавить субъект</b-button>
+            <b-button class="w-25" size="sm" @click="addRegion" v-b-tooltip.hover title="Добавить субъект"> + </b-button>
 
             <b-form-datalist id="input-regions" v-bind:disabled="!usingRegionFilter" :options="regions"></b-form-datalist>
         </b-row>
 
-        <b-row>
-          <b-button size="sm" @click="applyFilter" v-bind:disabled="!mergedCondition">Применить фильтр</b-button>
+        <b-row >
+          <b-button
+          class="w-100"
+          size="sm"
+          @click="applyFilter"
+          :disabled="(!validDamageType||!validMonths||!validRegions) || (!usingDamageTypeFilter&&!usingMonthFilter&&!usingRegionFilter)">
+          Применить фильтр
+          </b-button>
 
-          <b-button size="sm" @click="clearFilters">Очистить все фильтры</b-button>
-
-          <b-button  size="sm" v-bind:class ="{disabled:!isFilterGeoJSON}" v-b-modal.modal-graphic>Показать таблицу</b-button>
+          <b-button class="w-100" size="sm" @click="clearFilters" :disabled="!isFilterGeoJSON">Очистить все фильтры</b-button>
         </b-row>
-
-        <b-row>
-          <div v-if="isFilterGeoJSON" v-text="'Отобрано станций:' + countFiltered"></div>
+        <b-row >
+          <b-button  class="w-100" variant="success" size="sm" v-bind:class ="{disabled:!isFilterGeoJSON}" v-b-modal.modal-graphic>Показать таблицу</b-button>
         </b-row>
 
       </b-container>
@@ -177,6 +191,15 @@ export default {
     },
     countFiltered () {
       return this.$store.getters.GET_COUNT_SELECTED
+    },
+    validDamageType () {
+      return this.usingDamageTypeFilter ? this.selectedDamageTypes.length > 0 : true
+    },
+    validMonths () {
+      return this.usingMonthFilter ? this.selectedMonths.length > 0 : true
+    },
+    validRegions () {
+      return this.usingRegionFilter ? this.selectedRegions.length > 0 : true
     }
   },
   methods: {

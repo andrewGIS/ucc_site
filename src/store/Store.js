@@ -14,7 +14,6 @@ export const store = new Vuex.Store({
     gsLayerJoined: 'joined_base',
     initGeoJson: null,
     filteredGeoJSON: null,
-    initSideBarWidth: '350px',
     geoJSONVisible: false,
     WMSVisible: false,
     aviableDamageTypes: [],
@@ -35,18 +34,20 @@ export const store = new Vuex.Store({
         legendJSON: {}
       }
     },
+    mapMaxZoom: null,
     tableData: {}, // requested table data from geoserver
     selectedStations: [],
     eventsData: {},
     WMSLayerAnim: '',
     legendJSON: {},
     legendVisibillity: false,
-    statusInfo: false, // info in cursor on map1,
+    statusInfo: '', // info in cursor on map1,
     geoJSONClick: false,
     extremVisibillity: false,
     extremeSelectedEvent: {},
     extremeSelectedDate: '',
-    extremeWMS: {}
+    extremeWMS: {},
+    sideBarVisible: true
   },
   getters: {
     GET_STATIONS: state => {
@@ -137,6 +138,12 @@ export const store = new Vuex.Store({
     },
     GET_LEGEND_VISIBILLITY: state => {
       return state.legendVisibillity
+    },
+    GET_SIDEBAR_VISIBLE: state => {
+      return state.sideBarVisible
+    },
+    GET_MAP_ZOOM: state => {
+      return state.mapMaxZoom
     }
   },
   mutations: {
@@ -266,6 +273,12 @@ export const store = new Vuex.Store({
     },
     SET_LEGEND_VISIBILLITY (state, payload) {
       state.legendVisibillity = payload
+    },
+    SET_SIDEBAR_VISIBLE (state, payload) {
+      state.sideBarVisible = payload
+    },
+    SET_MAP_ZOOM (state, payload) {
+      state.mapMaxZoom = payload
     }
   },
   actions: {

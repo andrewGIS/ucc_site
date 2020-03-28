@@ -19,7 +19,7 @@
             </b-col>
             <b-col style="padding:0">
                 <div class="labels">
-                  <template v-for="colorMap in colorMaps">
+                  <template v-for="colorMap in sortedColorMaps">
                       <p :key="colorMap.quantity"> {{parseFloat(colorMap.quantity).toFixed(1)}} </p>
                   </template>
                 </div>
@@ -50,9 +50,21 @@ export default {
         return {}
       }
     },
+    sortedColorMaps () {
+      if (!this.$_.isEmpty(this.legendData)) {
+        const initArray = this.colorMaps
+        return initArray.sort((a, b) => {
+          if (parseFloat(a) > parseFloat(b)) {
+            return -1
+          }
+        })
+      } else {
+        return {}
+      }
+    },
     colorString () {
       if (!this.$_.isEmpty(this.legendData)) {
-        return this.$_.map(this.colorMaps, 'color').join(',')
+        return this.$_.map(this.sortedColorMaps, 'color').join(',')
       } else {
         return ''
       }

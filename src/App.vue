@@ -1,13 +1,18 @@
 <template>
-  <div id="main_container">
-    <div id="side_bar_container">
-       <my-sidebar-menu></my-sidebar-menu>
-    </div>
-      <div v-bind:style="{'margin-left':width}" id="map_container">
-      <my-map></my-map>
-    </div>
-    <!-- <div id="vuex_test">{{this.totalTvCount}}</div>
-    <div id="sidebar_status">{{this.isSideBarOpen}}</div> -->
+  <div style="height:100vh;">
+  <b-container fluid >
+    <b-row >
+      <b-col v-show="sideBarVisible" xs="12" sm="6" md="6" lg="5" xl="4" >
+        <my-sidebar-menu ></my-sidebar-menu>
+      </b-col>
+      <b-col>
+          <div style="display:flex;cursor:pointer;padding-top:15px;padding-bottom:5px;position:absolute;align-content:center;z-index:10000;left:20%;right:20%;background:white;justify-content:center;border-radius:0.25rem;" varinant="info" v-if="!sideBarVisible" @click="toggleVisible" v-b-tooltip.hover title="Нажмите, чтобы показать меню">
+            <b-icon class="h3" icon="list" variant="info"></b-icon><span style="font-size:1.0rem;"> АТЛАС ИЗМЕНЕНИЙ КЛИМАТА УРАЛА</span>
+            </div>
+          <my-map></my-map>
+      </b-col>
+    </b-row>
+  </b-container>
   </div>
 </template>
 
@@ -26,91 +31,48 @@ import MyMap from './components/TheMap'
 // Vue.component('font-awesome-icon', FontAwesomeIcon)
 
 export default {
-  initData: {
-    sideBarWidth: '350px'
-  },
-  name: 'App',
   data () {
     return {
-      state: 'test',
-      width: this.$options.initData.sideBarWidth
+      // sideBarVisible: true
     }
-    // initalWidth:this.$store.state.initSideBarWidth
-    // value: mapState(['totalTvCount']),
   },
+  name: 'App',
   // computed: {
   // width () {
   //   return this.$store.state.sideBarWidth
   // }
   // },
+  computed: {
+    sideBarVisible () {
+      return this.$store.getters.GET_SIDEBAR_VISIBLE
+    }
+  },
   components: {
     MySidebarMenu, MyMap
     // MySidebarMenu,
     // MyMap
   },
   methods: {
-    updateMap (sideBarWidth) {
-      // console.log('UpdateMap')
-      // console.log(sideBarWidth)
-      this.width = sideBarWidth
-      // const els = this.$el.getElementsByClassName('vsm--item')[0]
-      // console.log(els.__vue__.$listeners)
-      // console.log(els.__vue__.$listeners = [])
-      // els.$off()
-      // els.removeEventListener('click', null, false)
-      // console.log(document.getElementsByClassName('vsm--link'))
-      // this.$refs.lmap.this.mapObject.invalidateSize()
-      // console.log(this.$refs.lmap)
+    toggleVisible () {
+      this.$store.commit('SET_SIDEBAR_VISIBLE', !this.sideBarVisible)
     }
   }
 }
 </script>
 
 <style>
-body {
-  margin:0;
+/* .leaflet-container path{
+  transition: fill .75s;
+} */
+/* .leaflet-tile{
+  filter:blur(10px);
+  opacity: 0;
+  transform: rotate( 0deg ) scale(0);
 }
-#main_container {
-  font-family: apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen,Ubuntu,Cantarell,Fira Sans,Droid Sans,Helvetica Neue,sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  /* text-align: center; */
-  color: #2c3e50;
-  /* position: absolute; */
-  width: 100%;
-  height: 100vh;
-  /* padding:50px; */
-  /* margin-top: 60px; */
-  /* display: flex; */
-  /* flex-wrap: wrap; */
-  /* display: flex; */
-  /* justify-content: center; */
-  /* overflow: hidden; */
-  /* overflow: scroll; */
-}
-#map_container {
-  /* margin-left: 100px; */
-  /* left:350px; */
-  transition: cubic-bezier(0.075, 0.82, 0.165, 1);
-  /* position: relative; */
-  /* width: 100%; */
-  height: 100vh;
-  overflow-y: hidden;
-}
-#test_vuex {
-  background: red;
-  /* left:100px; */
-  z-index:10;
-  width:100em;
-  height: 100em;
-  margin:auto;
-}
-#side_bar_container{
-  width: 350px;
-  float: left;
-  overflow-y: hidden;
-}
-/* .collapsed {
-  margin-left:350px;
+.leaflet-tile.leaflet-tile-loaded{
+  filter:blur(0);
+  opacity: 1;
+  transform: rotate( 360deg ) scale(1);
+  transition: .2s all ease-in;
 } */
 </style>

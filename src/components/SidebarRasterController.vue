@@ -3,12 +3,19 @@
     <b-container>
       <b-row>
         <raster-picker ref="rasterPicker1" :map-num="1"></raster-picker>
-        <b-form-checkbox
-          v-model="showSecondMap"
-          name="check-button"
-          switch
-          @change="toggleSecondMap"
-        >Показать вторую карту</b-form-checkbox>
+        <b-form-group>
+          <b-form-checkbox-group switches>
+              <b-form-checkbox
+              v-model="selected"
+              value="identify"
+                >Включить идентификацию на карте</b-form-checkbox>
+              <b-form-checkbox
+                v-model="selected"
+                value="secondMap"
+              >Показать вторую карту
+              </b-form-checkbox>
+            </b-form-checkbox-group>
+          </b-form-group>
         </b-row>
       <b-row align-content="start">
         <b-button @click="startAnimPeriods">
@@ -44,7 +51,25 @@ export default {
   data () {
     return {
       // show second map
+      selected: [false, false],
+      // infoStatus: false,
       showSecondMap: false
+    }
+  },
+  watch: {
+    selected: function (newVal, oldVal) {
+      if (this.$_.includes(newVal, 'identify')) {
+        this.$store.commit('SET_INFO_STATUS', true)
+      } else {
+        this.$store.commit('SET_INFO_STATUS', false)
+      }
+      if (this.$_.includes(newVal, 'secondMap')) {
+        this.$store.commit('SET_SECOND_MAP_VISIBILITY', true)
+        this.showSecondMap = true
+      } else {
+        this.$store.commit('SET_SECOND_MAP_VISIBILITY', false)
+        this.showSecondMap = false
+      }
     }
   },
   methods: {
@@ -60,13 +85,9 @@ export default {
       // this.$store.commit('SET_INFO_STATUS', !this.infoStatus)
       this.$store.commit('SET_SECOND_MAP_VISIBILITY', payload)
     },
-    toggleInfo () {
-      this.$store.commit('SET_INFO_STATUS', !this.infoStatus)
-    }
-  },
-  computed: {
-    infoStatus () {
-      return this.$store.getters.GET_INFO_STATUS
+    toggleInfo (payload) {
+      // this.$store.commit('SET_INFO_STATUS', !this.infoStatus)
+      this.$store.commit('SET_INFO_STATUS', payload)
     }
   },
   components: {

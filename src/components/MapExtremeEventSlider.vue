@@ -1,14 +1,31 @@
 <template>
   <l-control position="bottomleft" v-if="(visible===true)&&(isSelectedSomething===true)">
-      <div style="background:white">
+      <div style="margin-right:75px;">
         <b-container fluid>
           <b-row align-v="center">
           <b-button size="sm" @click="startExtremeAnim" :disabled="isAnimation"><b-icon-play/></b-button>
           <b-button size="sm" @click="brakeAnimation" :disabled="!isAnimation"><b-icon-stop></b-icon-stop></b-button>
-          <span class="selectedDate">{{this.parsedDate}}</span>
+          <span v-if="isFullScreen" class="selectedDate">{{this.parsedDate}}</span>
+            <div v-if="isFullScreen">
             <template v-for="date in aviableDates">
               <input :disabled="isAnimation" type="radio" name="dates" :key="date" :value="date" v-model="selectedDate">
             </template>
+            </div>
+
+          <!-- control when not full display -->
+          <div v-if="!isFullScreen" >
+            <b-form inline>
+                <b-button size="sm" @click="prevDate" :disabled="isFirstDate||isAnimation">
+                  <b-icon icon="arrow-bar-left"></b-icon> Предыдущая дата
+                </b-button>
+                <b-form-select style="max-width:160px;" size="sm" v-model="selectedDate" :options="datesOptions"></b-form-select>
+                <!-- {{this.parsedDate}} -->
+                <b-button size="sm" @click="nextDate" :disabled="isLastDate||isAnimation">
+                  Следующая дата<b-icon icon="arrow-bar-right"></b-icon>
+                </b-button>
+                </b-form>
+          </div>
+
           <!-- <b-form-group label="Individual radios">
             <b-form-radio-group size="sm">
             <template v-for="date in aviableDates">
@@ -29,7 +46,8 @@ export default {
     return {
       selectedDate: '',
       isAnimation: false,
-      timer: ''
+      timer: '',
+      windowWidth: 0
     }
   },
   name: 'slider',
@@ -37,7 +55,7 @@ export default {
   methods: {
     startExtremeAnim () {
       let index = this.$_.indexOf(this.selectedDate, this.aviableDates) + 1
-      const duration = 1000
+      const duration = 500
 
       this.isAnimation = true
       this.wmsAnimLayer.redraw()
@@ -58,6 +76,30 @@ export default {
       this.isAnimation = false
       this.wmsAnimLayer.off()
       clearTimeout(this.timer)
+    },
+    onResize () {
+      // console.log(window.innerWidth)
+      // console.log(screen.width)
+      this.windowWidth = window.innerWidth
+    },
+    nextDate () {
+      this.selectedDate = this.aviableDates[this.aviableDates.indexOf(this.selectedDate) + 1]
+    },
+    prevDate () {
+      this.selectedDate = this.aviableDates[this.aviableDates.indexOf(this.selectedDate) - 1]
+    },
+    parseDate (date) {
+      const parseDate = new Date(parseInt(date.substring(0, 4)),
+        parseInt(date.substring(4, 6)) - 1,
+        parseInt(date.substring(6, 8)),
+        parseInt(date.split('_')[1]))
+      return parseDate.toLocaleString('ru', {
+        day: '2-digit',
+        month: 'numeric',
+        year: 'numeric',
+        hour: 'numeric',
+        minute: 'numeric'
+      })
     }
   },
   computed: {
@@ -82,11 +124,34 @@ export default {
         const parseDate = new Date(parseInt(this.selectedDate.substring(0, 4)),
           parseInt(this.selectedDate.substring(4, 6)) - 1,
           parseInt(this.selectedDate.substring(6, 8)),
-          parseInt(this.selectedDate.split('_')[1]) - 3)
-        return parseDate.toLocaleString('ru', { day: '2-digit', month: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric' })
+          parseInt(this.selectedDate.split('_')[1]))
+        return parseDate.toLocaleString('ru', {
+          day: '2-digit',
+          month: 'numeric',
+          year: 'numeric',
+          hour: 'numeric',
+          minute: 'numeric'
+        })
       } else {
         return 'Нет данных'
       }
+    },
+    isFullScreen () {
+      return this.windowWidth === screen.width && screen.width > 1000
+    },
+    isFirstDate () {
+      return this.aviableDates.indexOf(this.selectedDate) === 0
+    },
+    isLastDate () {
+      return this.aviableDates.indexOf(this.selectedDate) === this.aviableDates.length - 1
+    },
+    datesOptions () {
+      return this.$_.map(this.aviableDates, date => {
+        return {
+          value: date,
+          text: this.parseDate(date)
+        }
+      })
     }
   },
   watch: {
@@ -95,7 +160,15 @@ export default {
     },
     selectedDate: function () {
       this.$store.commit('SET_EXTREME_SELECTED_DATE', this.selectedDate)
+    },
+    windowHeight (newHeight, oldHeight) {
+      console.log(`it changed to ${newHeight} from ${oldHeight}`)
     }
+  },
+  mounted () {
+    this.$nextTick(() => {
+      window.addEventListener('resize', this.onResize)
+    })
   }
 }
 </script>
@@ -105,5 +178,7 @@ export default {
   padding-left:15px;
   padding-right:15px;
   font-weight:bold;
+  background: white;
+  border-radius: 0.25rem;
 }
 </style>
