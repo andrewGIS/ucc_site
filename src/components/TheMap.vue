@@ -1,41 +1,59 @@
 <template>
-<div class="map-wrapper">
-      <div id="map1" :style="{width:mapWidth + '%'}">
-      <l-map :key="keyMap1" ref="mapFirst" :zoom="zoom" :center="center" :minZoom="minZoom" :maxZoom="maxZoom" @update:bounds="setSecondMapBounds" @updateZoom="setSecondMapZoom" :maxBounds="maxBounds">
+<!-- <div class="map-wrapper"> -->
+  <!-- <b-container >
+    <b-row  cols="12">
+      <b-col> -->
+        <div >
+          <div style="height:100vh;" :style="'width:'+mapWidth + '%;'">
+        <l-map ref="mapFirst" :zoom="zoom" :center="center" :minZoom="minZoom" :maxZoom="maxZoom" @update:bounds="setSecondMapBounds" @updateZoom="setSecondMapZoom" :maxBounds="maxBounds" v-if="!secondMap">
 
-        <wms-layer :mapNum="1"></wms-layer>
-        <wms-legend :mapNum="1"></wms-legend>
+          <l-layer-group ref="popup1">
+              <l-popup :options="popupOptions" >{{infoValue1}}</l-popup>
+          </l-layer-group>
 
-        <!-- // test identification -->
-        <!-- <l-marker ref="markerTest" :visible="markerVisibility" :lat-lng="center" :options="markerOptions"></l-marker> -->
+          <wms-layer :mapNum="1"></wms-layer>
+          <wms-legend :mapNum="1"></wms-legend>
 
-        <wms-extrem-events ></wms-extrem-events>
+          <!-- // test identification -->
+          <!-- <l-marker ref="markerTest" :visible="markerVisibility" :lat-lng="center" :options="markerOptions"></l-marker> -->
 
-        <l-tile-layer :url="osmURL"></l-tile-layer>
+          <wms-extrem-events ></wms-extrem-events>
 
-        <station-layer></station-layer>
+          <l-tile-layer ref="osmLayer" :url="osmURL"></l-tile-layer>
 
-        <slider-extrem-events></slider-extrem-events>
+          <station-layer></station-layer>
 
-      </l-map>
-      </div>
-      <div id="map2" :style="{width:mapWidth + '%'}" v-if="secondMap" >
-        <l-map ref="mapSecond" :zoom="zoom" :center="center" :minZoom="minZoom" :maxZoom="maxZoom" :max-bounds="maxBounds" >
+          <slider-extrem-events></slider-extrem-events>
+
+        </l-map>
+        </div>
+      <!-- </b-col>
+    </b-row> -->
+      <!-- <div id="map1" :style="{width:mapWidth + '%;'}" style='height: 100vh;'> -->
+        <!-- </div> -->
+      <div id="map2" :style="{width:mapWidth + '%;'}" style='height: 100vh;'>
+        <l-map ref="mapSecond" :zoom="zoom" :center="center" :minZoom="minZoom" :maxZoom="maxZoom" :max-bounds="maxBounds" :options="option2" :style="'width:'+mapWidth + '%;'" v-if="!secondMap">
 
           <!-- If after wms layer it is not display -->
           <l-tile-layer :url="osmURL"></l-tile-layer>
+
+          <l-layer-group ref="popup2">
+            <l-popup :options="popupOptions" >{{infoValue2}}</l-popup>
+          </l-layer-group>
 
           <wms-layer :mapNum="2"></wms-layer>
           <wms-legend :mapNum="2"></wms-legend>
 
         </l-map>
       </div>
+      <!-- </b-container> -->
+<!-- </div> -->
 </div>
 </template>
 
 <script>
 import L from 'leaflet'
-import { LMap, LTileLayer } from 'vue2-leaflet'
+import { LMap, LTileLayer, LLayerGroup, LPopup } from 'vue2-leaflet'
 
 export default {
   name: 'my-map',
@@ -43,18 +61,24 @@ export default {
     return {
       map1: null,
       map2: null,
+      option1: { name: '1' },
+      option2: { name: '2' },
       zoom: 4,
       minZoom: 4,
       center: [60, 55],
       bounds: L.latLngBounds([[50, 40], [60, 50]]),
       maxBounds: L.latLngBounds([
-        [25, 30],
-        [80, 90]
+        [50, 30],
+        [70, 90]
       ]),
       osmURL: 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
       formatWMS: 'image/png',
-      keyMap1: 1,
-      circleKey: 1
+      infoValue1: null,
+      infoValue2: null,
+      popupOptions: {
+        className: 'custom-popup',
+        closeButton: false
+      }
     }
   },
   methods: {
@@ -70,9 +94,18 @@ export default {
         this.map2.setZoom(this.map1.getZoom())
       }
     },
-    identify (e, marker) {
-      const targetMap = this.map1
-      const condition = this.CQLFilter1
+    makeIdentify (e, mapNum) {
+      let targetMap
+      let condition
+      if (mapNum === 1) {
+        targetMap = this.map1
+        condition = this.condition1
+      }
+      if (mapNum === 2) {
+        targetMap = this.map2
+        condition = this.condition2
+      }
+      // console.log(targetMap.getBounds())
       const mapSize = targetMap.getSize()
       const params = {
         request: 'GetFeatureInfo',
@@ -83,20 +116,25 @@ export default {
         bbox: targetMap.getBounds().toBBoxString(),
         height: mapSize.y,
         width: mapSize.x,
-        layers: 'ucc:all_rasters_new',
-        query_layers: 'ucc:all_rasters_new',
+        layers: this.mainLayerName,
+        query_layers: this.mainLayerName,
         CQL_FILTER: condition,
         info_format: 'application/json',
-        styles: 'ucc:Day_with_snow'
+        styles: ''
       }
 
       const point = targetMap.latLngToContainerPoint(e.latlng, targetMap.getZoom())
       params[params.version === '1.3.0' ? 'i' : 'x'] = point.x
       params[params.version === '1.3.0' ? 'j' : 'y'] = point.y
+      // console.log(e.containerPoint)
+      // console.log(e.layerPoint)
+      // params[params.version === '1.3.0' ? 'i' : 'x'] = e.containerPoint.x
+      // params[params.version === '1.3.0' ? 'j' : 'y'] = e.containerPoint.y
 
-      const url = 'http://localhost:8090/geoserver/wms?' +
-          L.Util.getParamString(params, 'http://localhost:8090/geoserver/wms?', true)
+      const url = `${this.host}/geoserver/wms?` +
+          L.Util.getParamString(params, `${this.host}geoserver/wms?`, true)
 
+      // const ctx = this.mapObject
       // console.log(url)
       fetch(url)
         .then(response => { return response.json() })
@@ -105,48 +143,61 @@ export default {
           if (parseFloat(text) > 50000 || parseFloat(text) < -50000) {
             text = 0.0
           }
-          marker.setTooltipContent('<div>' + parseFloat(text).toFixed(1) + '</div>')
-          marker.setLatLng(e.latlng)
+          // marker.setTooltipContent('<div>' + parseFloat(text).toFixed(1) + '</div>')
+          // marker.setLatLng(e.latlng)
+          if (mapNum === 1) {
+            this.infoValue1 = parseFloat(text).toFixed(1)
+            this.$refs.popup1.mapObject.openPopup([e.latlng.lat, e.latlng.lng])
+          }
+          if (mapNum === 2) {
+            this.infoValue2 = parseFloat(text).toFixed(1)
+            this.$refs.popup2.mapObject.openPopup([e.latlng.lat, e.latlng.lng])
+          }
+          // this.$refs.popup.openOn(this.mapObject)
         })
-    },
-    clearMap (targetMarker) {
-      this.map1.removeLayer(targetMarker)
     }
   },
   created () {
     this.$store.dispatch('LOAD_STATIONS')
   },
   computed: {
+    host () {
+      return this.$store.state.host
+    },
     infoStatus () {
       return this.$store.getters.GET_INFO_STATUS
-    },
-    CQLFilter1 () {
-      return this.$store.getters.GET_MAP_FILTER(1)
     },
     secondMap () {
       return this.$store.getters.GET_SECOND_MAP_VISIBILLITY
     },
     mapWidth () {
-      return this.secondMap === true ? 50 : 100
-    },
-    markerOptions () {
-      return { opacity: 0.0 }
+      return this.secondMap ? 50 : 100
     },
     maxZoom () {
       return this.$store.getters.GET_MAP_ZOOM
+    },
+    condition1 () {
+      return this.$store.getters.GET_MAP_FILTER(1)
+    },
+    condition2 () {
+      return this.$store.getters.GET_MAP_FILTER(2)
+    },
+    mainLayerName () {
+      return `${this.$store.state.gsWorkspaceName}:${this.$store.state.gsMosaicLayerName}`
     }
-    // TODO: make refactoring for reference on one function with
-    // parameters
   },
   mounted () {
     this.$nextTick(() => {
       this.map1 = this.$refs.mapFirst.mapObject
+      // this.map2 = this.$refs.mapSecond.mapObject
       // this.marker = this.$refs.markerTest.mapObject
     })
   },
   components: {
     LMap,
     LTileLayer,
+    LLayerGroup,
+    LPopup,
     // LMarker,
     // LGeoJson,
     // only this way working
@@ -157,44 +208,71 @@ export default {
     'wms-layer': () => import('./MapWMSLayer.vue'),
     'slider-extrem-events': () => import('./MapExtremeEventSlider.vue'),
     'wms-extrem-events': () => import('./MapWMSExtremeLayer.vue')
-
   },
   watch: {
-    secondMap: function () {
-      if (this.secondMap) {
+    secondMap: function (newVal, oldVal) {
+      if (newVal) {
         this.$nextTick(() => {
           this.map2 = this.$refs.mapSecond.mapObject
-        // this.map2.invalidateSize()
+          // this.map2.dragging.disable()
+          // this.map2.touchZoom.disable()
+          // this.map2.doubleClickZoom.disable()
+          // this.map2.scrollWheelZoom.disable()
+          // this.map2.boxZoom.disable()
+          // this.map2.keyboard.disable()
+          // if (this.map2.tap) {
+          //   this.map2.tap.disable()
+          // }
+          // document.getElementById('map2').style.cursor = 'default'
+
+          this.map2.invalidateSize()
+          this.map1.invalidateSize()
+          if (this.infoStatus) {
+            this.map2.on('click', e => {
+              this.makeIdentify(e, 2)
+            })
+          }
         })
       }
-      // this.map1.invalidateSize()
+      // this.map2.remove()
+      this.map1.invalidateSize()
+      this.$refs.osmLayer.mapObject.redraw()
+      // this.$refs.mapFirst.mapObject.invalidateSize()
+      // if (this.secondMap) {
+      //   this.map2.invalidateSize()
+      // }
     },
     infoStatus: function (newVal, oldVal) {
       // experimental function for identification
-      const targetMarker = new L.Circle([0, 0], { radius: 0, opacity: 0.0 })
-      this.map1.addLayer(targetMarker)
-      targetMarker.bindTooltip('', {
-        permanent: true,
-        className: 'my-label',
-        // offset: [20.5, 25],
-        direction: 'left'
-      })
       if (newVal) {
-        this.circleKey = this.circleKey + 1
         this.map1.on('click', e => {
-          this.identify(e, targetMarker)
+          this.makeIdentify(e, 1)
         })
+        if (this.secondMap) {
+          this.map2.on('click', e => {
+            this.makeIdentify(e, 2)
+          })
+        }
       } else {
         this.map1.off('click')
+        if (this.secondMap) {
+          this.map2.off('click')
+          this.$refs.popup2.mapObject.closePopup()
+        }
+        this.$refs.popup1.mapObject.closePopup()
       }
     }
+    // this.map1.invalidateSize()
   }
 }
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style>
-.map-wrapper {
+.vue2leaflet-map {
+  width: 50%;
+}
+/* .map-wrapper {
   height: 100vh;
 }
 #map1, #map2 {
@@ -202,14 +280,32 @@ export default {
 }
 .map-wrapper {
   display: flex;
-}
-.overlay {
-    position: relative;
-    width: 100px;
-    top: 0;
-    left: 0;
-    pointer-events: none;
-    z-index:10000;
-    float: right;
-}
+} */
+
+/* leaflet popup*/
+  .custom-popup .leaflet-popup-content-wrapper {
+    background:#2c3e50;
+    border-radius: 0.25rem;
+    color:#fff;
+    font-size:12px;
+    line-height:24px;
+    }
+  .custom-popup .leaflet-popup-content-wrapper a {
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    color:rgba(255,255,255,0.5);
+    }
+  .leaflet-popup-tip {
+    background:#2c3e50;
+    /* width: 8px;
+    height: 8px;
+    margin-top: 4px; */
+    }
+  .leaflet-popup-content {
+    margin: 1px;
+    display: flex;
+    justify-content: center;
+  }
 </style>

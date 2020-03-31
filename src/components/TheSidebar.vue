@@ -6,8 +6,8 @@
 
       <b-list-group >
 
-        <b-list-group-item button v-if="activeGroup===''||activeGroup==='maps'" @click="clickMaps">
-          <b-icon-arrow-left v-if="activeGroup==='maps'" size="sm"></b-icon-arrow-left>
+        <b-list-group-item button v-if="activeGroup===''||activeGroup==='maps'" @click="clickMaps" :disabled="busy">
+          <b-icon-arrow-left v-if="activeGroup==='maps'" size="sm" :disabled="busy"></b-icon-arrow-left >
               <span v-if="activeGroup===''||activeGroup==='maps'">Карты</span>
         </b-list-group-item>
 
@@ -21,11 +21,13 @@
         <span  class="chapter" v-if="activeGroup===''||activeGroup==='DB'" >БД</span>
       </b-list-group-item>
 
-      <b-list-group-item button v-if="activeGroup===''||activeGroup==='extreme'" @click="clickExtreme">
-        <b-icon-arrow-left class="chapter" v-if="activeGroup==='extreme'" size="sm" ></b-icon-arrow-left>
+      <b-list-group-item button v-if="activeGroup===''||activeGroup==='extreme'" @click="clickExtreme" :disabled="busy">
+        <b-icon-arrow-left class="chapter" v-if="activeGroup==='extreme'" size="sm" :disabled="busy"></b-icon-arrow-left>
         <span class="chapter" v-if="activeGroup===''||activeGroup==='extreme'" >Отдельные случаи</span>
       </b-list-group-item>
       </b-list-group>
+
+      <!-- <b-button @click='clearStorage'>Очистить посещение</b-button> -->
 
       <b-container>
         <rastersController v-if="activeGroup==='maps'"></rastersController>
@@ -33,6 +35,28 @@
         <stations-picker v-if="activeGroup==='DB'"></stations-picker>
         <extreme-events-controller v-if="activeGroup==='extreme'"></extreme-events-controller>
       </b-container>
+
+      <b-toast id="mapInfo" title="Подсказка" no-auto-hide append-toast @hidden='isCloseMapsInfo=true'>
+        Это раздел <b>КАРТЫ</b>. Здесь собраны данные с различных источников. Все карты переведены в растровый вид. Можно создать две карты рядом для сравнения. Данные сгруппированы по категориям (Меню группы показателей). В каждой группе есть несколько показателей (например, средняя температура воздуха). Кнопки
+        <b-img :src="require('../assets/infoPics/buttons.jpg')" style="width:20%;height:20%"></b-img> позволяют анимировать периоды по доступным периодам, чтобы увидеть изменения, которые произошли за эти периоды.
+        <!-- <b-container>
+          <b-media right-align vertical-align="center">
+            <b-img :src="require('../assets/infoPics/buttons.jpg')" style="width:100%"></b-img>
+          </b-media>
+        </b-container> -->
+    </b-toast>
+
+      <b-toast id="statInfo" title="Подсказка" no-auto-hide append-toast @hidden='isCloseStatInfo=true'>
+        Это раздел <b>Статистика</b>. Здесь собраны данные по опасным случаям, которые произошли на метеостанциях Урала. Здесь можно посмотреть, сколько всего произошло явлений, в разрезе субъектов, типов явлений.
+    </b-toast>
+
+      <b-toast id="DBInfo" title="Подсказка" no-auto-hide append-toast @hidden='isCloseDBInfo=true'>
+        Это раздел <b>База данных</b>. Здесь можно посмотреть информацию по опасным явлениям на одной или нескольких станциях. Для этого необходимо выбрать интересующие станции или на карте или с помощью поиска по имени. В таблице есть <b>видео-материалы</b> и <b>ссылки</b> на СМИ, которые писали об этом явлении. Обратите внимание на эти поля в таблице.
+    </b-toast>
+
+      <b-toast id="extremeInfo" title="Подсказка" no-auto-hide append-toast @hidden='isCloseExtremeInfo=true'>
+        Это раздел <b>Отдельные случаи опасных явлений</b>. Здесь можно посмотреть информацию по отдельным опасным случаям. Для работы выберите интересующий случай. Внизу карты, можно выбрать отображение на конкретную дату, а также проиграть анимацию с помощью <b-img :src="require('../assets/infoPics/buttons.jpg')" style="width:20%;height:20%"></b-img>. Способы представления явления вы можете посмотреть кликнув на кнопочке информация <b-img :src="require('../assets/infoPics/info.jpg')" style="width:15%;height:15%"></b-img>. Там вы найдете о том, что это за явление и каким способами они отображено.
+    </b-toast>
 
   </div>
 </template>
@@ -49,10 +73,22 @@ import extremeEventsController from './SidebarExtremeEventsController'
 export default {
   data () {
     return {
-      activeGroup: ''
+      activeGroup: '',
+      isCloseMapsInfo: null,
+      isCloseStatInfo: null,
+      isCloseDBInfo: null,
+      isCloseExtremeInfo: null
     }
   },
   name: 'my-sidebar-menu',
+  computed: {
+    busy () {
+      return this.$store.getters.GET_BUSY_STATE
+    },
+    helpStatus () {
+      return this.$store.getters.GET_HELP_STATUS
+    }
+  },
   methods: {
     setActiveGroup (groupName) {
       this.activeGroup = groupName
@@ -74,6 +110,10 @@ export default {
         this.$store.commit('SET_LEGEND_VISIBILLITY', true)
         // this.$store.commit('SET_INFO_STATUS', true)
         this.$store.commit('SET_MAP_ZOOM', 6)
+
+        if (this.helpStatus && !this.isCloseMapsInfo) {
+          this.$bvToast.show('mapInfo')
+        }
       }
     },
     clickStat () {
@@ -85,6 +125,9 @@ export default {
         this.activeGroup = 'stat'
         this.$store.commit('SET_GEOJSON_VISIBILITY', true)
         this.$store.commit('SET_MAP_ZOOM', 14)
+        if (this.helpStatus && !this.isCloseStatInfo) {
+          this.$bvToast.show('statInfo')
+        }
       }
     },
     clickDB () {
@@ -95,6 +138,9 @@ export default {
         this.activeGroup = 'DB'
         this.$store.commit('SET_GEOJSON_VISIBILITY', true)
         this.$store.commit('SET_MAP_ZOOM', 14)
+        if (this.helpStatus && !this.isCloseDBInfo) {
+          this.$bvToast.show('DBInfo')
+        }
       }
     },
     clickExtreme () {
@@ -108,10 +154,16 @@ export default {
         this.activeGroup = 'extreme'
         this.$store.commit('SET_EXTREME_VISIBILLITY', true)
         this.$store.commit('SET_MAP_ZOOM', 4)
+        if (this.helpStatus && !this.isCloseExtremeInfo) {
+          this.$bvToast.show('extremeInfo')
+        }
       }
     },
     toggleVisible () {
       this.$store.commit('SET_SIDEBAR_VISIBLE', false)
+    },
+    clearStorage () {
+      delete localStorage.isFirstTime
     }
   },
   components: {

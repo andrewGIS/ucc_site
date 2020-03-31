@@ -10,6 +10,12 @@
               :items="eventsProps"
               :fields="fieldsEventsTable"
               >
+            <template v-slot:cell(url)="data">
+                <a :href="data.value" target="_blank" >{{data.value}}</a>
+            </template>
+            <template v-slot:cell(url_video)="data">
+                <a :href="data.value" target="_blank" >{{data.value}}</a>
+            </template>
             </b-table>
           </b-tab>
           <b-tab title="График">
@@ -27,11 +33,6 @@ export default {
   data () {
     return {
       fieldsEventsTable: [
-        {
-          key: 'wmo_id',
-          label: 'Идентификатор станции',
-          sortable: false
-        },
         {
           key: 'name',
           label: 'Название станции',
@@ -61,8 +62,21 @@ export default {
           key: 'duration',
           label: 'Длительность',
           sortable: true
+        },
+        {
+          key: 'url',
+          label: 'Ссылки',
+          sortable: true
+        },
+        {
+          key: 'url_video',
+          label: 'Медиа',
+          sortable: true
         }
-      ]
+      ],
+      tableData: this.$_.map(this.eventsProps, feature => {
+        feature.intensity = feature.intensity + feature.unit
+      })
     }
   },
   computed: {
@@ -70,7 +84,12 @@ export default {
       return this.$store.getters.GET_EVENTS_DATA
     },
     eventsProps () {
-      return this.eventsFilterData.features.map(feature => { return feature.properties })
+      const features = this.$_.map(this.eventsFilterData.features, feature => feature.properties)
+      return this.$_.forEach(features, feature => {
+        feature.duration = feature.duration + ' ' + feature.unit_durat
+        feature.intensity = feature.intensity + ' ' + feature.unit
+        feature.date = this.parseDate(feature.date)
+      })
     },
     chartOptionsDamageTypes () {
       const groupByObject = this.$_.groupBy(this.eventsProps, row => row.event_type)
@@ -101,6 +120,23 @@ export default {
           name: 'Общее число явлений'
         }]
       }
+    }
+  },
+  methods: {
+    parseDate (dateString) {
+      if (!dateString) {
+        return 'Нет данных'
+      }
+      // 2016-12-19Z
+      const splittedDate = dateString.split('-')
+      const parseDate = new Date(splittedDate[0],
+        splittedDate[1],
+        parseInt(splittedDate[2]))
+      return parseDate.toLocaleString('ru', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric'
+      })
     }
   },
   components: {

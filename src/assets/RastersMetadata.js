@@ -285,7 +285,7 @@ export const allMetadata = {
         methodLink: 'http://intercarto.msu.ru/jour/article.php?articleId=711&lang=ru'
       }],
       name: 'Prec_huge_10years',
-      periods: ['none', 'year'],
+      periods: ['none'],
       style: 'ucc:Prec_huge',
       years: ['1966_1995', '1976_2005', '1986_2015']
     },
@@ -327,7 +327,7 @@ export const allMetadata = {
         methodLink: 'http://intercarto.msu.ru/jour/article.php?articleId=711&lang=ru'
       }],
       name: 'T_count_max_year_10years',
-      periods: ['none', 'year'],
+      periods: ['none'],
       style: 'ucc:T_count_max_year',
       years: ['1951_1980', '1961_1990', '1971_2000', '1981_2010']
     },
@@ -341,7 +341,7 @@ export const allMetadata = {
         methodLink: 'http://intercarto.msu.ru/jour/article.php?articleId=711&lang=ru'
       }],
       name: 'T_count_min_year_10years',
-      periods: ['none', 'year'],
+      periods: ['none'],
       style: 'ucc:T_count_min_year',
       years: ['1951_1980', '1961_1990', '1971_2000', '1981_2010']
     },
@@ -513,7 +513,7 @@ export const allMetadata = {
         methodLink: 'http://intercarto.msu.ru/jour/article.php?articleId=711&lang=ru'
       }],
       name: 'Prec_days_more_30mm_10years',
-      periods: ['none', 'year'],
+      periods: ['none'],
       style: 'ucc:Prec_huge',
       years: ['1951_1980']
     },
@@ -527,7 +527,7 @@ export const allMetadata = {
         methodLink: 'http://intercarto.msu.ru/jour/article.php?articleId=711&lang=ru'
       }],
       name: 'Prec_max_day_year_1_perc',
-      periods: ['none', 'year'],
+      periods: ['none'],
       style: 'ucc:Prec_max_day_year_1_perc',
       years: ['1951_1980']
     },
@@ -541,7 +541,7 @@ export const allMetadata = {
         methodLink: 'http://intercarto.msu.ru/jour/article.php?articleId=711&lang=ru'
       }],
       name: 'Prec_max_day_year_5_perc',
-      periods: ['none', 'year'],
+      periods: ['none'],
       style: 'ucc:Prec_max_day_year_5_perc',
       years: ['1951_1980']
     },

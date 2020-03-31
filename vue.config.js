@@ -1,6 +1,6 @@
 module.exports = {
   publicPath: process.env.NODE_ENV === 'production'
-    ? '/~master/ucc/'
+    ? '/~master/ucc_temp/'
     : '/',
   configureWebpack: {
     devtool: 'source-map'

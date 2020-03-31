@@ -1,5 +1,5 @@
 <template>
-  <l-control position="bottomleft" v-if="(visible===true)&&(isSelectedSomething===true)">
+  <l-control position="bottomleft" v-if="(visible===true)&&(isSelectedSomething===true)" class="main-container">
       <div style="margin-right:75px;">
         <b-container fluid>
           <b-row align-v="center">
@@ -18,9 +18,9 @@
                 <b-button size="sm" @click="prevDate" :disabled="isFirstDate||isAnimation">
                   <b-icon icon="arrow-bar-left"></b-icon> Предыдущая дата
                 </b-button>
-                <b-form-select style="max-width:160px;" size="sm" v-model="selectedDate" :options="datesOptions"></b-form-select>
+                <b-form-select style="min-width:158px;max-width:160px;" size="sm" v-model="selectedDate" :options="datesOptions"></b-form-select>
                 <!-- {{this.parsedDate}} -->
-                <b-button size="sm" @click="nextDate" :disabled="isLastDate||isAnimation">
+                <b-button style="min-width:158px;" size="sm" @click="nextDate" :disabled="isLastDate||isAnimation">
                   Следующая дата<b-icon icon="arrow-bar-right"></b-icon>
                 </b-button>
                 </b-form>
@@ -54,6 +54,7 @@ export default {
   components: { LControl },
   methods: {
     startExtremeAnim () {
+      this.$store.commit('SET_BUSY_STATE', true)
       let index = this.$_.indexOf(this.selectedDate, this.aviableDates) + 1
       const duration = 500
 
@@ -76,6 +77,7 @@ export default {
       this.isAnimation = false
       this.wmsAnimLayer.off()
       clearTimeout(this.timer)
+      this.$store.commit('SET_BUSY_STATE', false)
     },
     onResize () {
       // console.log(window.innerWidth)
@@ -173,7 +175,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 .selectedDate {
   padding-left:15px;
   padding-right:15px;
@@ -181,4 +183,8 @@ export default {
   background: white;
   border-radius: 0.25rem;
 }
+.main-container{
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+}
+
 </style>

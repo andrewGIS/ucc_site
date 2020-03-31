@@ -1,6 +1,6 @@
 <template>
   <l-control position="bottomright" v-if="visible">
-    <b-container>
+    <b-container class="main_container">
         <b-row>
             <div class='legend-title'>Легенда
             </div>
@@ -54,9 +54,7 @@ export default {
       if (!this.$_.isEmpty(this.legendData)) {
         const initArray = this.colorMaps
         return initArray.sort((a, b) => {
-          if (parseFloat(a) > parseFloat(b)) {
-            return -1
-          }
+          return -(parseFloat(a.quantity) - parseFloat(b.quantity))
         })
       } else {
         return {}
@@ -94,5 +92,13 @@ export default {
   .labels p {
     margin: 0;
     padding:0;
+  }
+  .main_container {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+    background:white;
+    border-radius:0.25rem;
+  }
+  .legend-title {
+    font-weight: bold;
   }
 </style>

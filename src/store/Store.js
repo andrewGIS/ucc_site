@@ -47,7 +47,9 @@ export const store = new Vuex.Store({
     extremeSelectedEvent: {},
     extremeSelectedDate: '',
     extremeWMS: {},
-    sideBarVisible: true
+    sideBarVisible: true,
+    busy: false,
+    helpStatus: false
   },
   getters: {
     GET_STATIONS: state => {
@@ -144,6 +146,12 @@ export const store = new Vuex.Store({
     },
     GET_MAP_ZOOM: state => {
       return state.mapMaxZoom
+    },
+    GET_BUSY_STATE: state => {
+      return state.busy
+    },
+    GET_HELP_STATUS: state => {
+      return state.helpStatus
     }
   },
   mutations: {
@@ -253,6 +261,9 @@ export const store = new Vuex.Store({
     ADD_WMO_NAME (state, payload) {
       state.selectedStations.push(payload)
     },
+    REMOVE_WMO_NAME (state, payload) {
+      state.selectedStations = state.selectedStations.filter(station => station !== payload)
+    },
     CLEAR_SELECTED_WMOS (state) {
       state.selectedStations = []
     },
@@ -279,6 +290,12 @@ export const store = new Vuex.Store({
     },
     SET_MAP_ZOOM (state, payload) {
       state.mapMaxZoom = payload
+    },
+    SET_BUSY_STATE (state, payload) {
+      state.busy = payload
+    },
+    SET_HELP_STATUS (state, payload) {
+      state.helpStatus = payload
     }
   },
   actions: {

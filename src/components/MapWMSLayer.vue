@@ -36,7 +36,7 @@ export default {
     WMSOptions () {
       return {
         styles: this.$store.getters.GET_MAP_STYLE(this.mapNum),
-        CQL_Filter: this.$store.getters.GET_MAP_FILTER(this.mapNum)
+        cql_filter: this.$store.getters.GET_MAP_FILTER(this.mapNum)
       }
     }
   },

@@ -4,11 +4,11 @@
       <b-row>
         <raster-picker ref="rasterPicker1" :map-num="1"></raster-picker>
         <b-form-group>
-          <b-form-checkbox-group switches>
+          <b-form-checkbox-group switches :disabled="busy">
               <b-form-checkbox
               v-model="selected"
               value="identify"
-                >Включить идентификацию на карте</b-form-checkbox>
+                >Включить идентификацию на карте (по щелчку)</b-form-checkbox>
               <b-form-checkbox
                 v-model="selected"
                 value="secondMap"
@@ -17,11 +17,11 @@
             </b-form-checkbox-group>
           </b-form-group>
         </b-row>
-      <b-row align-content="start">
-        <b-button @click="startAnimPeriods">
+      <b-row align-content="start" v-show="!showSecondMap">
+        <b-button @click="startAnimPeriods" :disabled="busy">
           <b-icon-play></b-icon-play>
         </b-button>
-        <b-button @click="brakeAnimation">
+        <b-button @click="brakeAnimation" :disabled="!busy">
           <b-icon-square></b-icon-square>
         </b-button>
         <!-- experimantal function of idaentification  -->
@@ -56,17 +56,24 @@ export default {
       showSecondMap: false
     }
   },
+  computed: {
+    busy () {
+      return this.$store.getters.GET_BUSY_STATE
+    }
+  },
   watch: {
     selected: function (newVal, oldVal) {
-      if (this.$_.includes(newVal, 'identify')) {
+      if (this.$_.includes(newVal, 'identify') && !this.$_.includes(oldVal, 'identify')) {
         this.$store.commit('SET_INFO_STATUS', true)
-      } else {
+      }
+      if (!this.$_.includes(newVal, 'identify') && this.$_.includes(oldVal, 'identify')) {
         this.$store.commit('SET_INFO_STATUS', false)
       }
-      if (this.$_.includes(newVal, 'secondMap')) {
+      if (this.$_.includes(newVal, 'secondMap') && !this.$_.includes(oldVal, 'secondMap')) {
         this.$store.commit('SET_SECOND_MAP_VISIBILITY', true)
         this.showSecondMap = true
-      } else {
+      }
+      if (!this.$_.includes(newVal, 'secondMap') && this.$_.includes(oldVal, 'secondMap')) {
         this.$store.commit('SET_SECOND_MAP_VISIBILITY', false)
         this.showSecondMap = false
       }
@@ -74,7 +81,6 @@ export default {
   },
   methods: {
     startAnimPeriods () {
-      this.showSecondMap = false
       this.$store.commit('SET_SECOND_MAP_VISIBILITY', false)
       this.$refs.rasterPicker1.startAnimation()
     },

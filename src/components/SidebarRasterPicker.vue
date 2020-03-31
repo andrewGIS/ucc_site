@@ -1,12 +1,12 @@
 <template >
   <div>
-    <b-container>
+    <b-container >
         <!-- Select group of indicators -->
         <b-row>
           Выберите группу показателей
         </b-row>
         <b-row>
-          <b-form-select size="sm" v-model="selectedGroup">
+          <b-form-select size="sm" v-model="selectedGroup" :disabled="isAnimation">
             <option
               v-for="group in aviableGroups"
               :value="group.name"
@@ -21,7 +21,7 @@
         </b-row>
         <!-- Select group of indicators -->
         <b-row>
-          <b-form-select size="sm" v-model="selectedIndicator">
+          <b-form-select size="sm" v-model="selectedIndicator" :disabled="isAnimation">
             <option
               v-for="indicator in aviableGroupIndicators"
               :value="indicator.name"
@@ -36,7 +36,7 @@
         </b-row>
         <!-- Select year of selected indicator -->
         <b-row>
-          <b-form-select size="sm" v-model="selectedYear">
+          <b-form-select size="sm" v-model="selectedYear" :disabled="isAnimation">
             <option
               v-for="period in aviableIndicatorYears"
               :value="period"
@@ -51,7 +51,7 @@
         </b-row>
         <b-row>
         <!-- Select month of selected indicator -->
-          <b-form-select size="sm" v-model="selectedPeriod">
+          <b-form-select size="sm" v-model="selectedPeriod" :disabled="isAnimation">
             <option
               v-for="month in aviableIndicatorPeriods"
               :value="month.key"
@@ -62,7 +62,7 @@
         </b-row>
 
         <b-row style="padding:0">
-            <b-button size="sm" style="width:100%" @click="openModal" variant="info">Информация о показателе</b-button>
+            <b-button size="sm" style="width:100%" @click="openModal" variant="info" :disabled="isAnimation">Информация о показателе</b-button>
         </b-row>
 
       </b-container>
@@ -153,6 +153,7 @@ export default {
       this.selectedPeriod = this.aviableIndicatorPeriods[0].key
     },
     startAnimation () {
+      this.$store.commit('SET_BUSY_STATE', true)
       let index = this.$_.indexOf(this.aviableIndicatorYears, this.selectedYear) + 1
       const duration = 2000
 
@@ -174,6 +175,7 @@ export default {
       })
     },
     brakeAnimation () {
+      this.$store.commit('SET_BUSY_STATE', false)
       this.isAnimation = false
       this.wmsAnimLayer.off()
       clearTimeout(this.timer)
