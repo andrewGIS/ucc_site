@@ -5,6 +5,7 @@
         Введите название станции в поле или кликните на карте
       </b-row>
     <b-row>
+    <div style="width:100%;">
     <b-form-group>
       <b-form-tags v-model="selectedStationsNames" no-outer-focus class="mb-2" >
         <template v-slot="{ tags, disabled, addTag }">
@@ -28,7 +29,7 @@
                 label-for="tag-search-input"
                 label="Имя метеостанции"
                 label-cols-md="auto"
-                class="mb-0"
+                class="mb-4"
                 label-size="sm"
                 :description="searchDesc"
                 :disabled="disabled"
@@ -57,6 +58,7 @@
         </template>
       </b-form-tags>
     </b-form-group>
+    </div>
     </b-row>
 
     <b-row>

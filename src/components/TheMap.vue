@@ -1,53 +1,40 @@
 <template>
-<!-- <div class="map-wrapper"> -->
-  <!-- <b-container >
-    <b-row  cols="12">
-      <b-col> -->
-        <div >
-          <div style="height:100vh;" :style="'width:'+mapWidth + '%;'">
-        <l-map ref="mapFirst" :zoom="zoom" :center="center" :minZoom="minZoom" :maxZoom="maxZoom" @update:bounds="setSecondMapBounds" @updateZoom="setSecondMapZoom" :maxBounds="maxBounds" v-if="!secondMap">
+<div class="map-wrapper">
+          <div id="map1" :style="{width:mapWidth + '%'}">
+            <l-map ref="mapFirst" :zoom="zoom" :center="center" :minZoom="minZoom" :maxZoom="maxZoom" @update:bounds="setSecondMapBounds" @updateZoom="setSecondMapZoom" :maxBounds="maxBounds">
 
-          <l-layer-group ref="popup1">
-              <l-popup :options="popupOptions" >{{infoValue1}}</l-popup>
-          </l-layer-group>
+              <l-layer-group ref="popup1">
+                  <l-popup  :options="popupOptions" >{{infoValue1}}</l-popup>
+              </l-layer-group>
 
-          <wms-layer :mapNum="1"></wms-layer>
-          <wms-legend :mapNum="1"></wms-legend>
+              <l-tile-layer :url="osmURL"></l-tile-layer>
 
-          <!-- // test identification -->
-          <!-- <l-marker ref="markerTest" :visible="markerVisibility" :lat-lng="center" :options="markerOptions"></l-marker> -->
+              <wms-layer :mapNum="1"></wms-layer>
+              <wms-legend  :mapNum="1"></wms-legend>
 
-          <wms-extrem-events ></wms-extrem-events>
+              <wms-extrem-events ></wms-extrem-events>
 
-          <l-tile-layer ref="osmLayer" :url="osmURL"></l-tile-layer>
+              <station-layer></station-layer>
 
-          <station-layer></station-layer>
+              <slider-extrem-events></slider-extrem-events>
 
-          <slider-extrem-events></slider-extrem-events>
-
-        </l-map>
+            </l-map>
         </div>
-      <!-- </b-col>
-    </b-row> -->
-      <!-- <div id="map1" :style="{width:mapWidth + '%;'}" style='height: 100vh;'> -->
-        <!-- </div> -->
-      <div id="map2" :style="{width:mapWidth + '%;'}" style='height: 100vh;'>
-        <l-map ref="mapSecond" :zoom="zoom" :center="center" :minZoom="minZoom" :maxZoom="maxZoom" :max-bounds="maxBounds" :options="option2" :style="'width:'+mapWidth + '%;'" v-if="!secondMap">
+          <div id="map2" :style="{width:mapWidth + '%'}" v-if="secondMap">
+          <l-map ref="mapSecond" :zoom="zoom" :center="center" :minZoom="minZoom" :maxZoom="maxZoom" :max-bounds="maxBounds" :options="option2">
 
-          <!-- If after wms layer it is not display -->
-          <l-tile-layer :url="osmURL"></l-tile-layer>
+            <!-- If after wms layer it is not display -->
+            <l-tile-layer :url="osmURL"></l-tile-layer>
 
-          <l-layer-group ref="popup2">
-            <l-popup :options="popupOptions" >{{infoValue2}}</l-popup>
-          </l-layer-group>
+            <l-layer-group ref="popup2">
+              <l-popup :options="popupOptions" >{{infoValue2}}</l-popup>
+            </l-layer-group>
 
-          <wms-layer :mapNum="2"></wms-layer>
-          <wms-legend :mapNum="2"></wms-legend>
+            <wms-layer :mapNum="2"></wms-layer>
+            <wms-legend :mapNum="2"></wms-legend>
 
-        </l-map>
-      </div>
-      <!-- </b-container> -->
-<!-- </div> -->
+          </l-map>
+        </div>
 </div>
 </template>
 
@@ -78,7 +65,8 @@ export default {
       popupOptions: {
         className: 'custom-popup',
         closeButton: false
-      }
+      },
+      mapComponentKey: 10000
     }
   },
   methods: {
@@ -214,16 +202,16 @@ export default {
       if (newVal) {
         this.$nextTick(() => {
           this.map2 = this.$refs.mapSecond.mapObject
-          // this.map2.dragging.disable()
-          // this.map2.touchZoom.disable()
-          // this.map2.doubleClickZoom.disable()
-          // this.map2.scrollWheelZoom.disable()
-          // this.map2.boxZoom.disable()
-          // this.map2.keyboard.disable()
-          // if (this.map2.tap) {
-          //   this.map2.tap.disable()
-          // }
-          // document.getElementById('map2').style.cursor = 'default'
+          this.map2.dragging.disable()
+          this.map2.touchZoom.disable()
+          this.map2.doubleClickZoom.disable()
+          this.map2.scrollWheelZoom.disable()
+          this.map2.boxZoom.disable()
+          this.map2.keyboard.disable()
+          if (this.map2.tap) {
+            this.map2.tap.disable()
+          }
+          document.getElementById('map2').style.cursor = 'default'
 
           this.map2.invalidateSize()
           this.map1.invalidateSize()
@@ -236,7 +224,8 @@ export default {
       }
       // this.map2.remove()
       this.map1.invalidateSize()
-      this.$refs.osmLayer.mapObject.redraw()
+      // this.$forceUpdate()
+      this.mapComponentKey += 1
       // this.$refs.mapFirst.mapObject.invalidateSize()
       // if (this.secondMap) {
       //   this.map2.invalidateSize()
@@ -269,10 +258,7 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style>
-.vue2leaflet-map {
-  width: 50%;
-}
-/* .map-wrapper {
+ .map-wrapper {
   height: 100vh;
 }
 #map1, #map2 {
@@ -280,7 +266,7 @@ export default {
 }
 .map-wrapper {
   display: flex;
-} */
+}
 
 /* leaflet popup*/
   .custom-popup .leaflet-popup-content-wrapper {

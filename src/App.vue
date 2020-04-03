@@ -9,7 +9,7 @@
             <div style="display:flex;cursor:pointer;padding-top:15px;padding-bottom:5px;position:absolute;align-content:center;z-index:10000;left:20%;right:20%;background:white;justify-content:center;border-radius:0.25rem;" varinant="info" v-if="!sideBarVisible" @click="toggleVisible" v-b-tooltip.hover title="Нажмите, чтобы показать меню">
               <b-icon class="h3" icon="list" variant="info"></b-icon><span style="font-size:1.0rem;"> АТЛАС ИЗМЕНЕНИЙ КЛИМАТА УРАЛА</span>
             </div>
-            <my-map></my-map>
+            <my-map :key="keyTest"></my-map>
         </b-col>
     </b-row>
   </b-container>
@@ -53,6 +53,7 @@ export default {
     return {
       // sideBarVisible: true
       // isFirstTime: ''
+      keyTest: 1
     }
   },
   name: 'App',
@@ -67,6 +68,9 @@ export default {
     },
     helpStatus () {
       return this.$store.getters.GET_HELP_STATUS
+    },
+    secondMap () {
+      return this.$store.getters.GET_SECOND_MAP_VISIBILLITY
     }
   },
   components: {
@@ -89,6 +93,16 @@ export default {
       this.closeHelpAsk()
       if (payload) {
         this.$bvToast.show('sideBarInfo')
+      }
+    },
+    updateKey () {
+      this.keyTest += 1
+    }
+  },
+  watch: {
+    secondMap: function (newVal, oldVal) {
+      if (!newVal) {
+        this.updateKey()
       }
     }
   },

@@ -18,12 +18,12 @@
 
       <b-list-group-item button v-if="activeGroup===''||activeGroup==='DB'" @click="clickDB">
         <b-icon-arrow-left class="chapter" v-if="activeGroup==='DB'" size="sm"></b-icon-arrow-left>
-        <span  class="chapter" v-if="activeGroup===''||activeGroup==='DB'" >БД</span>
+        <span  class="chapter" v-if="activeGroup===''||activeGroup==='DB'" >БД ОЯ</span>
       </b-list-group-item>
 
       <b-list-group-item button v-if="activeGroup===''||activeGroup==='extreme'" @click="clickExtreme" :disabled="busy">
         <b-icon-arrow-left class="chapter" v-if="activeGroup==='extreme'" size="sm" :disabled="busy"></b-icon-arrow-left>
-        <span class="chapter" v-if="activeGroup===''||activeGroup==='extreme'" >Отдельные случаи</span>
+        <span class="chapter" v-if="activeGroup===''||activeGroup==='extreme'" >Отдельные случаи ОЯ</span>
       </b-list-group-item>
       </b-list-group>
 

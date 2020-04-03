@@ -7,9 +7,9 @@ Vue.use(Vuex)
 
 export const store = new Vuex.Store({
   state: {
-    host: 'http://localhost:8090',
+    host: 'http://ogs.psu.ru:8080',
     gsWorkspaceName: 'ucc',
-    gsMosaicLayerName: 'all_rasters_new',
+    gsMosaicLayerName: 'all_rasters',
     gsStationLayerName: 'wmo_stations',
     gsLayerJoined: 'joined_base',
     initGeoJson: null,
