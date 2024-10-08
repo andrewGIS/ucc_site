@@ -7,7 +7,7 @@ Vue.use(Vuex)
 
 export const store = new Vuex.Store({
   state: {
-    host: 'http://ogs.psu.ru:8080',
+    host: 'https://api.gispsu.ru',
     gsWorkspaceName: 'ucc',
     gsMosaicLayerName: 'all_rasters',
     gsStationLayerName: 'wmo_stations',
@@ -49,7 +49,8 @@ export const store = new Vuex.Store({
     extremeWMS: {},
     sideBarVisible: true,
     busy: false,
-    helpStatus: false
+    helpStatus: false,
+    map1_Object: null
   },
   getters: {
     GET_STATIONS: state => {
@@ -93,11 +94,7 @@ export const store = new Vuex.Store({
       return state.countByWMO
     },
     GET_IS_FILTER: (state) => {
-      if (state.initGeoJson === state.filteredGeoJSON) {
-        return false
-      } else {
-        return true
-      }
+      return state.initGeoJson !== state.filteredGeoJSON
     },
     GET_FILTERED_TABLE_DATA: (state) => {
       return state.tableData
@@ -152,9 +149,15 @@ export const store = new Vuex.Store({
     },
     GET_HELP_STATUS: state => {
       return state.helpStatus
+    },
+    GET_MAIN_MAP: state => {
+      return state.map1_Object
     }
   },
   mutations: {
+    SET_MAP (state, payload) {
+      state.map1_Object = payload
+    },
     SET_SELECTED_STATION_NAME (state, payload) {
       state.selectedStationName = payload
     },

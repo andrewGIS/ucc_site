@@ -87,6 +87,9 @@ export default {
     },
     helpStatus () {
       return this.$store.getters.GET_HELP_STATUS
+    },
+    mainMap () {
+      return this.$store.getters.GET_MAIN_MAP
     }
   },
   methods: {
@@ -161,6 +164,9 @@ export default {
     },
     toggleVisible () {
       this.$store.commit('SET_SIDEBAR_VISIBLE', false)
+      this.$nextTick(() => {
+        this.mainMap.invalidateSize()
+      })
     },
     clearStorage () {
       delete localStorage.isFirstTime

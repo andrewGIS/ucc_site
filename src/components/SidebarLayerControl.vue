@@ -58,20 +58,19 @@
               <b-form-input class="w-75" size="sm" list="input-regions" v-bind:disabled="!usingRegionFilter" id="input-region-list" placeholder="Введите имя субъекта" v-model="selectedRegion"></b-form-input>
 
             <b-button class="w-25" size="sm" @click="addRegion" v-b-tooltip.hover title="Добавить субъект"> + </b-button>
-
             <b-form-datalist id="input-regions" v-bind:disabled="!usingRegionFilter" :options="regions"></b-form-datalist>
         </b-row>
 
         <b-row >
           <b-button
-          class="w-100"
+          class="w-100 mb-2 mt-2"
           size="sm"
           @click="applyFilter"
           :disabled="(!validDamageType||!validMonths||!validRegions) || (!usingDamageTypeFilter&&!usingMonthFilter&&!usingRegionFilter)">
           Применить фильтр
           </b-button>
 
-          <b-button class="w-100" size="sm" @click="clearFilters" :disabled="!isFilterGeoJSON">Очистить все фильтры</b-button>
+          <b-button class="w-100 mb-2" size="sm" @click="clearFilters" :disabled="!isFilterGeoJSON">Очистить все фильтры</b-button>
         </b-row>
         <b-row >
           <b-button  class="w-100" variant="success" size="sm" v-bind:class ="{disabled:!isFilterGeoJSON}" v-b-modal.modal-graphic>Показать таблицу</b-button>

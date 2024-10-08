@@ -177,8 +177,11 @@ export default {
   mounted () {
     this.$nextTick(() => {
       this.map1 = this.$refs.mapFirst.mapObject
+      this.$store.commit('SET_MAP', this.$refs.mapFirst.mapObject)
       // this.map2 = this.$refs.mapSecond.mapObject
       // this.marker = this.$refs.markerTest.mapObject
+      const elements = document.getElementsByClassName('leaflet-control-attribution leaflet-control')
+      elements[0].remove()
     })
   },
   components: {
